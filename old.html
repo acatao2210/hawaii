@@ -114,14 +114,15 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
 .act-lava { margin-top:8px; background:var(--lava-light); border-left:3px solid var(--lava-mid); border-radius:0 6px 6px 0; padding:7px 10px; font-size:12.5px; color:var(--lava); line-height:1.5; }
 
 /* MAP */
-
+.map-page { display:flex; flex-direction:column; min-height:calc(100vh - 52px); }
 .map-controls { background:white; border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .map-filter-btn { padding:5px 14px; border-radius:20px; border:1px solid var(--border); background:white; font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:400; cursor:pointer; transition:all 0.15s; color:var(--stone-mid); }
-.map-filter-btn.active-all { background:var(--stone); border-color:var(--stone); color:white; }
-.map-filter-btn.active-food { background:var(--sand); border-color:var(--sand); color:white; }
 .map-filter-btn.active-oahu { background:var(--ocean); border-color:var(--ocean); color:white; }
-.map-filter-btn.active-adventure { background:var(--lava); border-color:var(--lava); color:white; }
-.map-filter-btn.active-hike { background:var(--ocean-mid); border-color:var(--ocean-mid); color:white; }
+.map-filter-btn.active-bigisland { background:var(--lava); border-color:var(--lava); color:white; }
+.map-filter-btn.active-food { background:var(--sand); border-color:var(--sand); color:white; }
+.map-filter-btn.active-all { background:var(--stone); border-color:var(--stone); color:white; }
+.map-wrapper { flex:1; position:relative; min-height:500px; }
+#map { width:100%; height:600px; }
 
 /* FOOD */
 .food-page { max-width:900px; margin:0 auto; padding:2rem 1.5rem 3rem; }
@@ -785,280 +786,14 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
 
 <!-- ════ MAP ════ -->
 <div class="page" id="page-map">
-<div style="max-width:900px;margin:0 auto;padding:1.5rem 1.5rem 3rem;">
-
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;">
-  <span style="font-size:12px;font-weight:500;color:var(--stone-mid);letter-spacing:0.08em;text-transform:uppercase;">Show:</span>
-  <button class="map-filter-btn active-all" id="mf-all" onclick="mapFilter('all')">All</button>
-  <button class="map-filter-btn" id="mf-hike" onclick="mapFilter('hike')">Hikes</button>
-  <button class="map-filter-btn" id="mf-food" onclick="mapFilter('food')">Food</button>
-  <button class="map-filter-btn" id="mf-adventure" onclick="mapFilter('adventure')">Adventure</button>
-  <button class="map-filter-btn" id="mf-culture" onclick="mapFilter('culture')">Culture</button>
-</div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-
-<!-- OAHU MAP -->
-<div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-  <div style="padding:10px 14px 6px;border-bottom:1px solid var(--stone-pale);display:flex;align-items:center;gap:8px;">
-    <div style="width:10px;height:10px;border-radius:50%;background:var(--ocean-mid);flex-shrink:0;"></div>
-    <span style="font-size:13px;font-weight:500;color:var(--stone);">Oahu</span>
-    <span style="font-size:11px;color:var(--stone-mid);margin-left:auto;">Days 1–6</span>
+  <div class="map-controls">
+    <span style="font-size:13px;font-weight:500;color:var(--stone-mid);margin-right:4px;">Filter:</span>
+    <button class="map-filter-btn active-all" id="filter-all" onclick="filterMap('all')">All</button>
+    <button class="map-filter-btn" id="filter-oahu" onclick="filterMap('oahu')">Oahu</button>
+    <button class="map-filter-btn" id="filter-bigisland" onclick="filterMap('bigisland')">Big Island</button>
+    <button class="map-filter-btn" id="filter-food" onclick="filterMap('food')">Food Only</button>
   </div>
-  <div id="oahu-map-wrap" style="position:relative;width:100%;padding-bottom:110%;overflow:hidden;">
-    <svg id="oahu-svg" viewBox="0 0 400 440" width="100%" style="position:absolute;top:0;left:0;">
-      <defs>
-        <pattern id="ocean-hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="8" stroke="#B8D8E8" stroke-width="0.6"/>
-        </pattern>
-        <pattern id="land-grain" patternUnits="userSpaceOnUse" width="4" height="4">
-          <circle cx="2" cy="2" r="0.4" fill="#C8A96E" opacity="0.3"/>
-        </pattern>
-        <filter id="sketch">
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="2" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-
-      <!-- Ocean background -->
-      <rect width="400" height="440" fill="url(#ocean-hatch)"/>
-      <!-- Horizon lines for depth -->
-      <line x1="0" y1="30" x2="400" y2="30" stroke="#A0C8DC" stroke-width="0.5" opacity="0.5"/>
-      <line x1="0" y1="60" x2="400" y2="60" stroke="#A0C8DC" stroke-width="0.4" opacity="0.3"/>
-
-      <!-- Oahu island shape (approximate, sketch-feel) -->
-      <!-- Main island body -->
-      <path d="M 80,180 C 75,165 82,148 95,138 C 108,128 125,120 145,115 C 165,110 188,108 210,110 C 232,112 252,118 268,128 C 284,138 294,152 298,168 C 302,184 298,200 290,212 C 282,224 268,232 252,238 C 236,244 218,246 200,246 C 182,246 164,242 148,234 C 132,226 118,214 106,202 C 94,190 82,192 80,180 Z"
-            fill="#E8DCC8" stroke="#8B7355" stroke-width="1.5" filter="url(#sketch)" opacity="0.95"/>
-      <!-- Island texture dots -->
-      <path d="M 80,180 C 75,165 82,148 95,138 C 108,128 125,120 145,115 C 165,110 188,108 210,110 C 232,112 252,118 268,128 C 284,138 294,152 298,168 C 302,184 298,200 290,212 C 282,224 268,232 252,238 C 236,244 218,246 200,246 C 182,246 164,242 148,234 C 132,226 118,214 106,202 C 94,190 82,192 80,180 Z"
-            fill="url(#land-grain)" opacity="0.6"/>
-      <!-- Ko'olau mountains sketch -->
-      <polyline points="130,175 140,158 152,168 165,150 178,162 192,148 205,160 218,146 228,158 240,170" fill="none" stroke="#7A6040" stroke-width="1.2" stroke-linejoin="round" opacity="0.6"/>
-
-      <!-- Island label -->
-      <text x="190" y="195" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#5C4A28" opacity="0.7" font-style="italic">O'ahu</text>
-
-      <!-- North Shore label -->
-      <text x="190" y="108" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#3A6080" opacity="0.8">North Shore</text>
-
-      <!-- Windward label -->
-      <text x="305" y="178" text-anchor="start" font-family="Georgia,serif" font-size="9" fill="#3A6080" opacity="0.8">Windward</text>
-
-      <!-- Honolulu label -->
-      <text x="148" y="238" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#3A6080" opacity="0.8">Honolulu</text>
-
-      <!-- PINS - each is a clickable group -->
-      <!-- Day 1 - Arrival/Rainbow/Helena/Leonard -->
-      <g class="map-pin" data-day="day1" data-type="food" onclick="goDay('day1')" style="cursor:pointer;">
-        <circle cx="152" cy="224" r="9" fill="#C8903E" stroke="white" stroke-width="2"/>
-        <text x="152" y="228" text-anchor="middle" font-size="9" font-weight="bold" fill="white">1</text>
-        <rect x="104" y="234" width="96" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="152" y="246" text-anchor="middle" font-size="9" fill="#5C4A28">Arrival · Honolulu</text>
-      </g>
-
-      <!-- Day 2 - SE Coast: Diamond Head, Hanauma, Kailua -->
-      <g class="map-pin" data-day="day2" data-type="hike" onclick="goDay('day2')" style="cursor:pointer;">
-        <circle cx="218" cy="228" r="9" fill="#0F6E56" stroke="white" stroke-width="2"/>
-        <text x="218" y="232" text-anchor="middle" font-size="9" font-weight="bold" fill="white">2</text>
-        <rect x="170" y="238" width="96" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="218" y="250" text-anchor="middle" font-size="9" fill="#0B4A38">SE Coast · Kailua</text>
-      </g>
-
-      <!-- Day 3 - Koko/Kualoa/Pali -->
-      <g class="map-pin" data-day="day3" data-type="adventure" onclick="goDay('day3')" style="cursor:pointer;">
-        <circle cx="252" cy="190" r="9" fill="#7A2E0E" stroke="white" stroke-width="2"/>
-        <text x="252" y="194" text-anchor="middle" font-size="9" font-weight="bold" fill="white">3</text>
-        <rect x="208" y="200" width="88" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="252" y="212" text-anchor="middle" font-size="9" fill="#4A1A06">Adventure day</text>
-      </g>
-
-      <!-- Day 4 - North Shore -->
-      <g class="map-pin" data-day="day4" data-type="hike" onclick="goDay('day4')" style="cursor:pointer;">
-        <circle cx="180" cy="122" r="9" fill="#0F6E56" stroke="white" stroke-width="2"/>
-        <text x="180" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="white">4</text>
-        <rect x="136" y="106" width="88" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="180" y="118" text-anchor="middle" font-size="9" fill="#0B4A38">North Shore</text>
-      </g>
-
-      <!-- Day 5 - Pearl Harbor / Downtown / Manoa -->
-      <g class="map-pin" data-day="day5" data-type="culture" onclick="goDay('day5')" style="cursor:pointer;">
-        <circle cx="138" cy="200" r="9" fill="#1A5F8A" stroke="white" stroke-width="2"/>
-        <text x="138" y="204" text-anchor="middle" font-size="9" font-weight="bold" fill="white">5</text>
-        <rect x="44" y="192" width="82" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="85" y="204" text-anchor="middle" font-size="9" fill="#0C3F5C">History &amp; culture</text>
-      </g>
-
-      <!-- Day 6 - Lanikai -->
-      <g class="map-pin" data-day="day6" data-type="hike" onclick="goDay('day6')" style="cursor:pointer;">
-        <circle cx="268" cy="210" r="9" fill="#0F6E56" stroke="white" stroke-width="2"/>
-        <text x="268" y="214" text-anchor="middle" font-size="9" font-weight="bold" fill="white">6</text>
-        <rect x="224" y="220" width="88" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="268" y="232" text-anchor="middle" font-size="9" fill="#0B4A38">Lanikai farewell</text>
-      </g>
-
-      <!-- Day 10 - Return to Oahu -->
-      <g class="map-pin" data-day="day10" data-type="hike" onclick="goDay('day10')" style="cursor:pointer;">
-        <circle cx="200" cy="178" r="9" fill="#6B5320" stroke="white" stroke-width="2"/>
-        <text x="200" y="182" text-anchor="middle" font-size="9" font-weight="bold" fill="white">10</text>
-        <rect x="158" y="162" width="84" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="200" y="174" text-anchor="middle" font-size="9" fill="#3D2E0A">Return · solo</text>
-      </g>
-
-      <!-- Day 11 - Departure -->
-      <g class="map-pin" data-day="day11" data-type="travel" onclick="goDay('day11')" style="cursor:pointer;">
-        <circle cx="135" cy="218" r="9" fill="#3D3C38" stroke="white" stroke-width="2"/>
-        <text x="135" y="222" text-anchor="middle" font-size="9" font-weight="bold" fill="white">11</text>
-        <rect x="44" y="210" width="80" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="84" y="222" text-anchor="middle" font-size="9" fill="#2C2C2A">Departure day</text>
-      </g>
-
-      <!-- Compass rose -->
-      <g transform="translate(356,400)">
-        <circle cx="0" cy="0" r="16" fill="white" opacity="0.7" stroke="#8B7355" stroke-width="0.5"/>
-        <text x="0" y="-6" text-anchor="middle" font-size="9" fill="#5C4A28" font-family="Georgia,serif">N</text>
-        <line x1="0" y1="-13" x2="0" y2="13" stroke="#8B7355" stroke-width="0.8"/>
-        <line x1="-13" y1="0" x2="13" y2="0" stroke="#8B7355" stroke-width="0.8" opacity="0.5"/>
-      </g>
-
-      <!-- Scale -->
-      <rect x="20" y="410" width="60" height="2" fill="#5C4A28" opacity="0.5"/>
-      <line x1="20" y1="407" x2="20" y2="413" stroke="#5C4A28" stroke-width="1" opacity="0.5"/>
-      <line x1="80" y1="407" x2="80" y2="413" stroke="#5C4A28" stroke-width="1" opacity="0.5"/>
-      <text x="50" y="424" text-anchor="middle" font-size="8" fill="#5C4A28" font-family="Georgia,serif" opacity="0.6">~15 mi</text>
-    </svg>
-  </div>
-</div>
-
-<!-- BIG ISLAND MAP -->
-<div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-  <div style="padding:10px 14px 6px;border-bottom:1px solid var(--stone-pale);display:flex;align-items:center;gap:8px;">
-    <div style="width:10px;height:10px;border-radius:50%;background:var(--lava-mid);flex-shrink:0;"></div>
-    <span style="font-size:13px;font-weight:500;color:var(--stone);">Big Island</span>
-    <span style="font-size:11px;color:var(--stone-mid);margin-left:auto;">Days 7–9</span>
-  </div>
-  <div id="bigisland-map-wrap" style="position:relative;width:100%;padding-bottom:110%;overflow:hidden;">
-    <svg id="bi-svg" viewBox="0 0 400 440" width="100%" style="position:absolute;top:0;left:0;">
-      <defs>
-        <pattern id="ocean-hatch2" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="8" stroke="#B8D8E8" stroke-width="0.6"/>
-        </pattern>
-        <pattern id="lava-grain" patternUnits="userSpaceOnUse" width="5" height="5">
-          <circle cx="2.5" cy="2.5" r="0.5" fill="#8B3A1C" opacity="0.2"/>
-        </pattern>
-        <filter id="sketch2">
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="7" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-
-      <!-- Ocean -->
-      <rect width="400" height="440" fill="url(#ocean-hatch2)"/>
-      <line x1="0" y1="30" x2="400" y2="30" stroke="#A0C8DC" stroke-width="0.5" opacity="0.5"/>
-
-      <!-- Big Island - much larger, roughly triangular -->
-      <path d="M 170,50 C 190,46 215,48 238,55 C 265,63 286,78 302,100 C 318,122 326,148 328,175 C 330,202 326,230 316,255 C 306,280 290,300 268,316 C 246,332 220,340 194,340 C 168,340 142,332 120,316 C 98,300 82,278 72,252 C 62,226 60,196 66,168 C 72,140 86,114 106,94 C 126,74 150,54 170,50 Z"
-            fill="#E0D4B8" stroke="#7A6040" stroke-width="1.5" filter="url(#sketch2)" opacity="0.95"/>
-      <path d="M 170,50 C 190,46 215,48 238,55 C 265,63 286,78 302,100 C 318,122 326,148 328,175 C 330,202 326,230 316,255 C 306,280 290,300 268,316 C 246,332 220,340 194,340 C 168,340 142,332 120,316 C 98,300 82,278 72,252 C 62,226 60,196 66,168 C 72,140 86,114 106,94 C 126,74 150,54 170,50 Z"
-            fill="url(#lava-grain)" opacity="0.5"/>
-
-      <!-- Lava flows (darker patches) -->
-      <path d="M 178,270 C 185,280 192,295 188,310 C 184,325 172,335 160,338 C 148,341 136,336 128,326" fill="none" stroke="#5C3015" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
-      <path d="M 185,275 C 196,285 208,298 205,315" fill="none" stroke="#5C3015" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-
-      <!-- Mauna Kea sketch -->
-      <polyline points="148,130 162,108 176,130" fill="none" stroke="#6A5535" stroke-width="1.5" stroke-linejoin="round"/>
-      <text x="162" y="105" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="#5C4A28" opacity="0.7">Mauna Kea</text>
-
-      <!-- Mauna Loa sketch -->
-      <polyline points="170,185 190,158 210,185" fill="none" stroke="#6A5535" stroke-width="1.5" stroke-linejoin="round"/>
-      <text x="190" y="155" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="#5C4A28" opacity="0.7">Mauna Loa</text>
-
-      <!-- Region labels -->
-      <text x="88" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#3A6080" opacity="0.8">Kona</text>
-      <text x="310" y="195" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#3A6080" opacity="0.8">Hilo</text>
-      <text x="195" y="68" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="#3A6080" opacity="0.8">N. Kohala</text>
-      <text x="195" y="335" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#5C2810" opacity="0.8" font-style="italic">Ka'u</text>
-
-      <!-- Island name -->
-      <text x="194" y="210" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#5C4A28" opacity="0.5" font-style="italic">Hawai'i</text>
-
-      <!-- DAY 7 - Kona arrival -->
-      <g class="map-pin" data-day="day7" data-type="travel" onclick="goDay('day7')" style="cursor:pointer;">
-        <circle cx="88" cy="205" r="9" fill="#7A2E0E" stroke="white" stroke-width="2"/>
-        <text x="88" y="209" text-anchor="middle" font-size="9" font-weight="bold" fill="white">7</text>
-        <rect x="48" y="215" width="80" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="88" y="227" text-anchor="middle" font-size="9" fill="#4A1A06">Arrive Kona</text>
-      </g>
-
-      <!-- DAY 8 - Volcanoes NP + Punaluu -->
-      <g class="map-pin" data-day="day8" data-type="adventure" onclick="goDay('day8')" style="cursor:pointer;">
-        <circle cx="194" cy="295" r="9" fill="#7A2E0E" stroke="white" stroke-width="2"/>
-        <text x="194" y="299" text-anchor="middle" font-size="9" font-weight="bold" fill="white">8</text>
-        <rect x="150" y="305" width="88" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="194" y="317" text-anchor="middle" font-size="9" fill="#4A1A06">Volcanoes NP</text>
-      </g>
-
-      <!-- DAY 9 - North: Waipio, Akaka, Pololu + Manta -->
-      <g class="map-pin" data-day="day9" data-type="adventure" onclick="goDay('day9')" style="cursor:pointer;">
-        <circle cx="194" cy="110" r="9" fill="#7A2E0E" stroke="white" stroke-width="2"/>
-        <text x="194" y="114" text-anchor="middle" font-size="9" font-weight="bold" fill="white">9</text>
-        <rect x="152" y="120" width="84" height="16" rx="4" fill="white" opacity="0.88"/>
-        <text x="194" y="132" text-anchor="middle" font-size="9" fill="#4A1A06">North + manta rays</text>
-      </g>
-
-      <!-- Manta ray icon near Kona coast -->
-      <g transform="translate(60,240)" opacity="0.45">
-        <path d="M 0,-6 C 8,-8 16,-4 20,0 C 16,4 8,8 0,6 C -8,8 -16,4 -20,0 C -16,-4 -8,-8 0,-6 Z" fill="#1A5F8A" stroke="none"/>
-        <line x1="0" y1="6" x2="0" y2="18" stroke="#1A5F8A" stroke-width="0.8"/>
-      </g>
-      <text x="60" y="265" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#1A5F8A" opacity="0.6">mantas</text>
-
-      <!-- Volcano smoke/glow -->
-      <circle cx="194" cy="268" r="6" fill="#CC4400" opacity="0.25"/>
-      <circle cx="194" cy="268" r="10" fill="#CC4400" opacity="0.1"/>
-      <text x="194" y="264" text-anchor="middle" font-size="8" fill="#882200" opacity="0.5">&#9679;</text>
-
-      <!-- Compass -->
-      <g transform="translate(356,400)">
-        <circle cx="0" cy="0" r="16" fill="white" opacity="0.7" stroke="#8B7355" stroke-width="0.5"/>
-        <text x="0" y="-6" text-anchor="middle" font-size="9" fill="#5C4A28" font-family="Georgia,serif">N</text>
-        <line x1="0" y1="-13" x2="0" y2="13" stroke="#8B7355" stroke-width="0.8"/>
-        <line x1="-13" y1="0" x2="13" y2="0" stroke="#8B7355" stroke-width="0.8" opacity="0.5"/>
-      </g>
-
-      <!-- Scale -->
-      <rect x="20" y="410" width="60" height="2" fill="#5C4A28" opacity="0.5"/>
-      <line x1="20" y1="407" x2="20" y2="413" stroke="#5C4A28" stroke-width="1" opacity="0.5"/>
-      <line x1="80" y1="407" x2="80" y2="413" stroke="#5C4A28" stroke-width="1" opacity="0.5"/>
-      <text x="50" y="424" text-anchor="middle" font-size="8" fill="#5C4A28" font-family="Georgia,serif" opacity="0.6">~30 mi</text>
-    </svg>
-  </div>
-</div>
-
-</div>
-
-<!-- Legend + day list -->
-<div style="margin-top:1.25rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;">
-  <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:.85rem 1.1rem;flex:1;min-width:200px;">
-    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--stone-mid);margin-bottom:8px;">Pin types</div>
-    <div style="display:flex;flex-direction:column;gap:5px;">
-      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-mid);"><span style="width:10px;height:10px;border-radius:50%;background:#0F6E56;flex-shrink:0;"></span>Hike / beach</div>
-      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-mid);"><span style="width:10px;height:10px;border-radius:50%;background:#7A2E0E;flex-shrink:0;"></span>Adventure</div>
-      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-mid);"><span style="width:10px;height:10px;border-radius:50%;background:#1A5F8A;flex-shrink:0;"></span>Culture</div>
-      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-mid);"><span style="width:10px;height:10px;border-radius:50%;background:#C8903E;flex-shrink:0;"></span>Food</div>
-      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-mid);"><span style="width:10px;height:10px;border-radius:50%;background:#3D3C38;flex-shrink:0;"></span>Travel</div>
-    </div>
-  </div>
-
-  <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:.85rem 1.1rem;flex:2;min-width:260px;">
-    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--stone-mid);margin-bottom:8px;">Jump to day</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:5px;" id="day-jump-grid">
-    </div>
-  </div>
-</div>
-
-</div>
+  <div class="map-wrapper"><div id="map" style="width:100%;height:600px;"></div></div>
 </div>
 
 <!-- ════ FOOD GUIDE ════ -->
@@ -1188,8 +923,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   </div>
 </div></div>
 
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 document.querySelectorAll('.nav-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -1208,69 +943,95 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
   });
 });
 
-
-function goDay(dayId) {
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const tab = document.querySelector('[data-page="'+dayId+'"]');
-  const page = document.getElementById('page-'+dayId);
-  if(tab) tab.classList.add('active');
-  if(page) page.classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function mapFilter(type) {
-  document.querySelectorAll('.map-filter-btn').forEach(b => {
-    b.className = 'map-filter-btn';
-  });
-  const btn = document.getElementById('mf-' + type);
-  if(btn) btn.classList.add('active-' + (type==='all'?'all':type==='food'?'food':type==='adventure'?'adventure':type==='hike'?'oahu':'all'));
-  
-  document.querySelectorAll('.map-pin').forEach(pin => {
-    const ptype = pin.getAttribute('data-type');
-    if(type === 'all' || ptype === type) {
-      pin.style.opacity = '1';
-      pin.style.pointerEvents = 'auto';
-    } else {
-      pin.style.opacity = '0.15';
-      pin.style.pointerEvents = 'none';
-    }
-  });
-}
-
-const dayMeta = [
-  {id:'day1', label:'Day 1 · Arrival', color:'#C8903E'},
-  {id:'day2', label:'Day 2 · SE Coast', color:'#0F6E56'},
-  {id:'day3', label:'Day 3 · Adventure', color:'#7A2E0E'},
-  {id:'day4', label:'Day 4 · North Shore', color:'#0F6E56'},
-  {id:'day5', label:'Day 5 · History', color:'#1A5F8A'},
-  {id:'day6', label:'Day 6 · Lanikai', color:'#0F6E56'},
-  {id:'day7', label:'Day 7 · Arrive BI', color:'#7A2E0E'},
-  {id:'day8', label:'Day 8 · Volcanoes', color:'#7A2E0E'},
-  {id:'day9', label:'Day 9 · North BI', color:'#7A2E0E'},
-  {id:'day10', label:'Day 10 · Return', color:'#6B5320'},
-  {id:'day11', label:'Day 11 · Departure', color:'#3D3C38'},
+const locations = [
+  // OAHU HIKES & ACTIVITIES
+  {name:"Diamond Head Trail",lat:21.2638,lng:-157.8041,island:"oahu",type:"hike",day:2,desc:"Summit trail · 1.6 mi · 560 ft gain · Reserve online"},
+  {name:"Makapu'u Lighthouse Trail",lat:21.3088,lng:-157.6504,island:"oahu",type:"hike",day:2,desc:"2 mi paved coastal trail · Southeast coast views"},
+  {name:"Hanauma Bay",lat:21.2690,lng:-157.6938,island:"oahu",type:"adventure",day:2,desc:"Premier snorkel sanctuary · Reserve in advance · $25"},
+  {name:"Kailua Beach",lat:21.3978,lng:-157.7262,island:"oahu",type:"beach",day:2,desc:"Most beautiful beach on Oahu · Kayak to the Mokes"},
+  {name:"Koko Crater Railway Trail",lat:21.2809,lng:-157.6919,island:"oahu",type:"hike",day:3,desc:"1,048 steps up dormant crater · No reservation needed"},
+  {name:"Kualoa Ranch",lat:21.5187,lng:-157.8533,island:"oahu",type:"adventure",day:3,desc:"ATV/zip-line/movie sites · Book at kualoa.com"},
+  {name:"Nu'uanu Pali Lookout",lat:21.3671,lng:-157.7931,island:"oahu",type:"culture",day:3,desc:"Dramatic cliffside view · Historical battle site · $7 parking"},
+  {name:"Ehukai Pillbox Trail",lat:21.6644,lng:-158.0493,island:"oahu",type:"hike",day:4,desc:"WWII bunkers · North Shore panorama · ~1 hr"},
+  {name:"Waimea Valley",lat:21.6353,lng:-158.0529,island:"oahu",type:"hike",day:4,desc:"Botanical garden + swimmable waterfall · Wed–Sun only"},
+  {name:"Haleiwa Town",lat:21.5928,lng:-158.1034,island:"oahu",type:"culture",day:4,desc:"Historic surf town · Shave ice · Local shops"},
+  {name:"Pearl Harbor Memorial",lat:21.3676,lng:-157.9389,island:"oahu",type:"culture",day:5,desc:"USS Arizona Memorial · Book tickets in advance"},
+  {name:"Iolani Palace",lat:21.3068,lng:-157.8588,island:"oahu",type:"culture",day:5,desc:"Only royal palace in US · Tue–Sat · ~$22"},
+  {name:"Manoa Falls Trail",lat:21.3360,lng:-157.7999,island:"oahu",type:"hike",day:5,desc:"Easy 1.6 mi · Lush rainforest · Jurassic Park filming site"},
+  {name:"Lanikai Pillbox Trail",lat:21.3901,lng:-157.7194,island:"oahu",type:"hike",day:6,desc:"WWII bunkers · Best views on Oahu · 2 mi · Steep"},
+  // OAHU FOOD
+  {name:"Helena's Hawaiian Food",lat:21.3309,lng:-157.8651,island:"oahu",type:"food",day:1,desc:"Michelin-recognized · Pipikaula ribs · Kalua pig · Tue–Fri"},
+  {name:"Rainbow Drive-In",lat:21.2759,lng:-157.8146,island:"oahu",type:"food",day:1,desc:"Plate lunch icon since 1961 · Loco moco · Mixed plate"},
+  {name:"Leonard's Bakery",lat:21.2848,lng:-157.8133,island:"oahu",type:"food",day:1,desc:"Malasadas since 1952 · Open 5:30 am–7 pm"},
+  {name:"Fete Restaurant",lat:21.3112,lng:-157.8620,island:"oahu",type:"food",day:3,desc:"Brooklyn-meets-Hawaii · Local fish · Reserve ahead"},
+  {name:"Matsumoto Shave Ice",lat:21.5911,lng:-158.1029,island:"oahu",type:"food",day:4,desc:"North Shore institution since 1951 · Shave ice"},
+  // BIG ISLAND HIKES & ACTIVITIES
+  {name:"Hawai'i Volcanoes NP",lat:19.4964,lng:-155.4662,island:"bigisland",type:"adventure",day:8,desc:"Active volcano · Crater Rim Trail · Lava tube · $30 entry"},
+  {name:"Punalu'u Black Sand Beach",lat:19.1358,lng:-155.5048,island:"bigisland",type:"beach",day:8,desc:"Jet black volcanic sand · Sea turtles hauled out · Free"},
+  {name:"Waipio Valley Overlook",lat:20.1103,lng:-155.5996,island:"bigisland",type:"culture",day:9,desc:"Valley of the Kings · Sacred Hawaiian site · Dramatic views"},
+  {name:"'Akaka Falls State Park",lat:19.8532,lng:-155.1550,island:"bigisland",type:"hike",day:9,desc:"442-ft waterfall · Easy 0.4 mi loop · $10 parking"},
+  {name:"Pololu Valley Lookout",lat:20.2036,lng:-155.7338,island:"bigisland",type:"hike",day:9,desc:"0.9 mi to black sand beach · Steep · Remote & beautiful"},
+  {name:"Manta Ray Night Snorkel",lat:19.6479,lng:-155.9983,island:"bigisland",type:"adventure",day:9,desc:"Night snorkel with 8–15ft wingspan mantas · Book ahead"},
+  // BIG ISLAND FOOD
+  {name:"Umeke's Fish Market",lat:19.6440,lng:-155.9991,island:"bigisland",type:"food",day:7,desc:"Best poke in Kona · Avo poke nachos · Guy Fieri approved"},
+  {name:"Kona Brewing Co.",lat:19.6431,lng:-155.9975,island:"bigisland",type:"food",day:9,desc:"Original Kona taproom · Fresh poke · Pizza · Draft ales"},
+  {name:"Moon and Turtle",lat:19.7254,lng:-155.0872,island:"bigisland",type:"food",day:9,desc:"Best restaurant in Hilo · Ocean-to-table · Reserve now"},
+  {name:"Merriman's Waimea",lat:20.0230,lng:-155.6766,island:"bigisland",type:"food",day:9,desc:"#1 restaurant Big Island · 100% local farm-to-table · Reserve"},
 ];
 
-const grid = document.getElementById('day-jump-grid');
-if(grid) {
-  dayMeta.forEach(d => {
-    const btn = document.createElement('button');
-    btn.style.cssText = 'text-align:left;padding:5px 8px;border-radius:6px;border:1px solid #DDD9CF;background:white;cursor:pointer;font-size:12px;font-family:inherit;color:'+d.color+';font-weight:500;transition:background 0.15s;';
-    btn.textContent = d.label;
-    btn.onmouseover = () => btn.style.background = '#F5F4F0';
-    btn.onmouseout = () => btn.style.background = 'white';
-    btn.onclick = () => goDay(d.id);
-    grid.appendChild(btn);
+const typeColors = {hike:'#0B5E4F',adventure:'#7A2E0E',culture:'#1A5F8A',food:'#C8903E',beach:'#1D9E75'};
+
+function createIcon(type) {
+  const c = typeColors[type]||'#555';
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.25);"></div>`,
+    iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-28]
   });
 }
 
-document.querySelectorAll('.map-pin').forEach(pin => {
-  pin.addEventListener('mouseenter', function() {
-    this.querySelector('circle').setAttribute('r', '11');
+let map, allMarkers=[], mapReady=false;
+
+function initMap() {
+  mapReady=true;
+  var mapEl=document.getElementById('map');
+  if(!mapEl.offsetHeight){mapEl.style.height='600px';}
+  map = L.map('map',{center:[20.5,-157.5],zoom:7});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+  locations.forEach(loc=>{
+    const m = L.marker([loc.lat,loc.lng],{icon:createIcon(loc.type)}).addTo(map)
+      .bindPopup(`<strong style="font-size:13.5px">${loc.name}</strong><br><span style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.05em">${loc.island==='bigisland'?'Big Island':loc.island.charAt(0).toUpperCase()+loc.island.slice(1)} · Day ${loc.day}</span><br><span style="font-size:12.5px;display:block;margin-top:3px">${loc.desc}</span>`);
+    m._d = loc; allMarkers.push(m);
   });
-  pin.addEventListener('mouseleave', function() {
-    this.querySelector('circle').setAttribute('r', '9');
+  const lg = L.control({position:'bottomright'});
+  lg.onAdd=function(){
+    const d=L.DomUtil.create('div');
+    d.style.cssText='background:white;padding:10px 14px;border-radius:8px;border:1px solid #ddd;font-family:Outfit,sans-serif;font-size:12px;line-height:1.8;';
+    d.innerHTML=Object.entries(typeColors).map(([t,c])=>`<div><span style="display:inline-block;width:10px;height:10px;background:${c};border-radius:50%;margin-right:6px;"></span>${t.charAt(0).toUpperCase()+t.slice(1)}</div>`).join('');
+    return d;
+  };
+  lg.addTo(map);
+  window.mapInitialized=true;
+}
+
+function filterMap(f) {
+  document.querySelectorAll('.map-filter-btn').forEach(b=>{
+    b.className='map-filter-btn';
+    if(b.id==='filter-'+f) b.classList.add('active-'+f);
   });
-});
+  allMarkers.forEach(m=>{
+    const loc=m._d; let show=false;
+    if(f==='all') show=true;
+    else if(f==='oahu') show=loc.island==='oahu';
+    else if(f==='bigisland') show=loc.island==='bigisland';
+    else if(f==='food') show=loc.type==='food';
+    if(show){if(!map.hasLayer(m))m.addTo(map);}
+    else{if(map.hasLayer(m))map.removeLayer(m);}
+  });
+  if(f==='oahu') map.setView([21.3,-157.9],10);
+  else if(f==='bigisland') map.setView([19.8,-155.5],9);
+  else map.setView([20.5,-157.5],7);
+}
 </script>
+</body>
+</html>
