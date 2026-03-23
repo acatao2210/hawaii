@@ -114,15 +114,15 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
 .act-lava { margin-top:8px; background:var(--lava-light); border-left:3px solid var(--lava-mid); border-radius:0 6px 6px 0; padding:7px 10px; font-size:12.5px; color:var(--lava); line-height:1.5; }
 
 /* MAP */
-.map-page { display:flex; flex-direction:column; height:calc(100vh - 52px); }
+.map-page { display:flex; flex-direction:column; min-height:calc(100vh - 52px); }
 .map-controls { background:white; border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .map-filter-btn { padding:5px 14px; border-radius:20px; border:1px solid var(--border); background:white; font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:400; cursor:pointer; transition:all 0.15s; color:var(--stone-mid); }
 .map-filter-btn.active-oahu { background:var(--ocean); border-color:var(--ocean); color:white; }
 .map-filter-btn.active-bigisland { background:var(--lava); border-color:var(--lava); color:white; }
 .map-filter-btn.active-food { background:var(--sand); border-color:var(--sand); color:white; }
 .map-filter-btn.active-all { background:var(--stone); border-color:var(--stone); color:white; }
-.map-wrapper { flex:1; position:relative; }
-#map { width:100%; height:100%; }
+.map-wrapper { flex:1; position:relative; min-height:500px; }
+#map { width:100%; height:600px; }
 
 /* FOOD */
 .food-page { max-width:900px; margin:0 auto; padding:2rem 1.5rem 3rem; }
@@ -793,7 +793,7 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
     <button class="map-filter-btn" id="filter-bigisland" onclick="filterMap('bigisland')">Big Island</button>
     <button class="map-filter-btn" id="filter-food" onclick="filterMap('food')">Food Only</button>
   </div>
-  <div class="map-wrapper"><div id="map"></div></div>
+  <div class="map-wrapper"><div id="map" style="width:100%;height:600px;"></div></div>
 </div>
 
 <!-- ════ FOOD GUIDE ════ -->
@@ -932,7 +932,13 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('page-' + tab.dataset.page).classList.add('active');
-    if (tab.dataset.page === 'map' && !window.mapInitialized) initMap();
+    if (tab.dataset.page === 'map') {
+      if (!window.mapInitialized) {
+        setTimeout(initMap, 50);
+      } else {
+        setTimeout(function(){ map.invalidateSize(); }, 50);
+      }
+    }
     window.scrollTo(0,0);
   });
 });
@@ -988,6 +994,8 @@ let map, allMarkers=[], mapReady=false;
 
 function initMap() {
   mapReady=true;
+  var mapEl=document.getElementById('map');
+  if(!mapEl.offsetHeight){mapEl.style.height='600px';}
   map = L.map('map',{center:[20.5,-157.5],zoom:7});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
   locations.forEach(loc=>{
