@@ -94,11 +94,11 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
 
 .day-section-label { font-size:10.5px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone-mid); margin:1.5rem 0 .75rem; }
 .activity-block { background:white; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:.75rem; }
-.act-item { display:flex; align-items:stretch; border-bottom:1px solid var(--stone-pale); }
+.act-item { display:grid; grid-template-columns:68px 1fr; grid-template-rows:auto auto; border-bottom:1px solid var(--stone-pale); }
 .act-item:last-child { border-bottom:none; }
-.act-time-col { width:68px; flex-shrink:0; padding:14px 12px 14px 16px; display:flex; align-items:flex-start; justify-content:flex-end; border-right:1px solid var(--stone-pale); }
+.act-time-col { grid-column:1; grid-row:1 / -1; padding:14px 12px 14px 16px; display:flex; align-items:flex-start; justify-content:flex-end; border-right:1px solid var(--stone-pale); }
 .act-time-text { font-size:11px; font-weight:500; color:var(--stone-mid); text-align:right; line-height:1.4; }
-.act-body { flex:1; padding:14px 16px; }
+.act-body { grid-column:2; grid-row:1; padding:14px 16px; min-width:0; }
 .act-name { font-weight:500; font-size:14.5px; margin-bottom:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .act-tag { font-size:10px; font-weight:500; padding:2px 7px; border-radius:8px; }
 .tag-hike { background:var(--ocean-light); color:var(--ocean); }
@@ -156,6 +156,25 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   .summary-body, .day-page, .food-page { padding:1.25rem 1rem 2.5rem; }
   .book-grid { grid-template-columns:1fr; }
 }
+
+/* ── Expandable activity panels ── */
+.act-item { cursor:pointer; }
+.act-item:hover .act-body { background:var(--ocean-pale); }
+.act-expand-icon { margin-left:auto; flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--stone-pale); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--stone-mid); transition:transform 0.2s, background 0.15s; }
+.act-item.expanded .act-expand-icon { transform:rotate(180deg); background:var(--ocean-light); color:var(--ocean); border-color:var(--ocean-mid); }
+.act-item.expanded .act-body { background:var(--ocean-pale); }
+.act-name { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.act-details-panel { display:none; grid-column:2; grid-row:2; border-top:1px solid var(--stone-pale); }
+.act-details-panel.open { display:block; animation:slideDown 0.18s ease; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-3px); } to { opacity:1; transform:translateY(0); } }
+.act-details-inner { padding:8px 16px 12px; }
+.act-detail-card { display:flex; gap:12px; padding:5px 0; border-bottom:1px solid var(--stone-pale); align-items:baseline; }
+.act-detail-card:last-child { border-bottom:none; }
+.adc-label { font-size:9px; font-weight:500; letter-spacing:0.13em; text-transform:uppercase; color:var(--stone-mid); flex-shrink:0; width:76px; padding-top:2px; }
+.adc-value { font-size:12.5px; color:var(--stone); line-height:1.55; flex:1; }
+.adc-value a { color:var(--ocean); text-decoration:none; }
+.adc-value a:hover { text-decoration:underline; }
+.adc-unconfirmed { font-size:11px; color:var(--stone-mid); font-style:italic; margin-top:2px; }
 </style>
 </head>
 <body>
@@ -210,8 +229,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="tl-date"><div class="tl-date-mon">May</div><div class="tl-date-day">19</div></div>
         <div class="tl-dot tl-dot-oahu"></div>
         <div class="tl-content">
-          <div class="tl-title">Southeast Oahu <span class="tl-badge badge-oahu">Oahu · Group</span></div>
-          <div class="tl-desc">Diamond Head summit, Makapu'u Lighthouse Trail, Hanauma Bay snorkel, Kailua Beach, kayak to the Mokes.</div>
+          <div class="tl-title">Diamond Head + Culture <span class="tl-badge badge-oahu">Oahu · Group</span></div>
+          <div class="tl-desc">Diamond Head summit, Bishop Museum, Lyon Arboretum, Manoa Falls Trail. Friday fireworks at Waikiki if it's the 22nd.</div>
         </div>
       </div>
 
@@ -219,8 +238,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="tl-date"><div class="tl-date-mon">May</div><div class="tl-date-day">20</div></div>
         <div class="tl-dot tl-dot-oahu"></div>
         <div class="tl-content">
-          <div class="tl-title">Adventure Day <span class="tl-badge badge-oahu">Oahu · Group</span></div>
-          <div class="tl-desc">Koko Crater railway steps, Kualoa Ranch (ATV/zip-line), Nu'uanu Pali Lookout. Dinner at Fete.</div>
+          <div class="tl-title">Southeast Coast <span class="tl-badge badge-oahu">Oahu · Group</span></div>
+          <div class="tl-desc">Makapu'u Lighthouse Trail, Waiāhole Black Sand Beach, Hanauma Bay snorkel, Kailua Beach, kayak to the Mokes.</div>
         </div>
       </div>
 
@@ -228,8 +247,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="tl-date"><div class="tl-date-mon">May</div><div class="tl-date-day">21</div></div>
         <div class="tl-dot tl-dot-oahu"></div>
         <div class="tl-content">
-          <div class="tl-title">North Shore Day <span class="tl-badge badge-oahu">Oahu · Group</span></div>
-          <div class="tl-desc">Ehukai Pillbox, Waimea Valley & Falls, North Shore shrimp trucks, Haleiwa Town, Matsumoto shave ice.</div>
+          <div class="tl-title">Adventure + Windward Coast <span class="tl-badge badge-oahu">Oahu · Group</span></div>
+          <div class="tl-desc">Koko Head railway steps, Kualoa Ranch (ATV/zip-line), Byodo-in Temple, Nu'uanu Pali Lookout. Dinner at Fete.</div>
         </div>
       </div>
 
@@ -237,8 +256,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="tl-date"><div class="tl-date-mon">May</div><div class="tl-date-day">22</div></div>
         <div class="tl-dot tl-dot-oahu"></div>
         <div class="tl-content">
-          <div class="tl-title">History & Culture <span class="tl-badge badge-oahu">Oahu · Group</span></div>
-          <div class="tl-desc">Pearl Harbor, Chinatown lunch, Manoa Falls Trail, Iolani Palace. Dinner at MW Restaurant.</div>
+          <div class="tl-title">North Shore Day <span class="tl-badge badge-oahu">Oahu · Group</span></div>
+          <div class="tl-desc">Ehukai Pillbox, Waimea Valley & Falls, Ted's Bakery plate lunch, Kawela Bay & Sunset Beach, Haleiwa, Matsumoto shave ice, North Shore shrimp trucks.</div>
         </div>
       </div>
 
@@ -246,8 +265,8 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="tl-date"><div class="tl-date-mon">May</div><div class="tl-date-day">23</div></div>
         <div class="tl-dot tl-dot-oahu"></div>
         <div class="tl-content">
-          <div class="tl-title">Lanikai + Final group day <span class="tl-badge badge-oahu">Oahu · Group</span></div>
-          <div class="tl-desc">Lanikai Pillbox hike, Lanikai Beach, Kailua morning, farewell dinner for the group. Book interisland flight for tomorrow.</div>
+          <div class="tl-title">History, Gardens & Ko Olina <span class="tl-badge badge-oahu">Oahu · Group</span></div>
+          <div class="tl-desc">Pearl Harbor, Chinatown lunch, Ho'omaluhia Botanical Garden, Ko Olina Lagoons sunset. Farewell dinner for the group.</div>
         </div>
       </div>
 
@@ -356,21 +375,29 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Afternoon & Evening</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:42 pm</div></div><div class="act-body">
-      <div class="act-name">Arrive HNL <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">Arrive HNL <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">United 219 lands from ORD. Pick up rental car at HNL. Traffic out of the airport can be slow — give yourself time. Drive toward Waikiki or Kailua depending on where you're staying. Don't nap — push through to local bedtime to beat jet lag.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free (airport)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">N/A — pick up rental car at arrivals</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">HNL open 24/7</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">United 219 from ORD. Rental car counters at the ground transportation level. Traffic out of the airport can be slow — give yourself extra time.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Daniel+K.+Inouye+International+Airport/@21.3245,-157.9251,15z" target="_blank">📍 Honolulu International Airport (HNL)</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:00 pm</div></div><div class="act-body">
-      <div class="act-name">Check In + Beach Walk <span class="act-tag tag-beach">Beach</span></div>
+      <div class="act-name">Check In + Beach Walk <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Get oriented. If near Waikiki, stroll the beachfront strip. May in Oahu is warm (~82°F), settled weather, low chance of rain. The sun, humidity, and light will already feel like a different world.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Hotel or Waikiki beach parking lots (~$3–5/hr)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Waikiki Beach open always</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">May in Oahu averages ~82°F with low rain chance. Great for a first beach stroll.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Waikiki+Beach+Honolulu+HI" target="_blank">📍 Waikiki Beach, Honolulu</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:30 pm</div></div><div class="act-body">
-      <div class="act-name">Dinner: Rainbow Drive-In or Helena's Hawaiian Food <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Dinner: Rainbow Drive-In or Helena's Hawaiian Food <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Rainbow Drive-In (3308 Kanaina Ave, Kapahulu): Oahu icon since 1961 — loco moco, mixed plates, plate lunches. Open daily till 9 pm. Helena's Hawaiian Food (1240 N School St): Michelin-recognized since 1946 — kalua pig, pipikaula short ribs, butterfish collar. <strong>Helena's is closed Mon/Sat/Sun</strong>, so this works if arriving Tuesday or later.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$10–16/plate at Rainbow · ~$12–18 at Helena's</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free lot at Rainbow · Street parking at Helena's</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Rainbow: daily 7am–9pm · Helena's: Tue–Fri 10am–7:30pm ONLY</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Helena's is CLOSED Mon, Sat & Sun. If arriving on Monday, go to Rainbow Drive-In.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Rainbow+Drive-In/@21.2825,-157.8218,17z" target="_blank">📍 Rainbow Drive-In, 3308 Kanaina Ave</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">8:00 pm</div></div><div class="act-body">
-      <div class="act-name">Leonard's Bakery for Malasadas <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Leonard's Bakery for Malasadas <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Portuguese donut-style pastry on Kapahulu Ave — crispy outside, choice of fillings: guava, custard, coconut. Open till 7 pm (arrive before close). Cash helps for small orders. The perfect first-night dessert.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$2–4 per malasada</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free street parking on Kapahulu Ave</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 5:30am–7pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.leonardshawaii.com/" target="_blank">leonardshawaii.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">933 Kapahulu Ave. Cash or card. Get the custard or guava filled — the original plain is also iconic.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Leonard%27s+Bakery/@21.2812,-157.8185,17z" target="_blank">📍 Leonard's Bakery, 933 Kapahulu Ave</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -379,39 +406,60 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-hero-bar day-hero-oahu">
     <div class="day-num-large">2</div>
     <div class="day-hero-label">Tuesday, May 19 · Oahu · With Friends</div>
-    <div class="day-hero-title">Southeast Coast</div>
-    <div class="day-hero-date">Diamond Head · Hanauma Bay · Kailua</div>
+    <div class="day-hero-title">Diamond Head + Culture</div>
+    <div class="day-hero-date">Diamond Head · Bishop Museum · Waikiki Fireworks</div>
   </div>
-  <div class="day-section-label">Morning</div>
+  <div class="day-section-label">Early Morning</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:30 am</div></div><div class="act-body">
-      <div class="act-name">Diamond Head Summit Trail <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">Diamond Head Summit Trail <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">1.6 mi round trip, ~560 ft gain. Iconic volcanic crater with 360° views of Waikiki and the coast. Mix of paved path, steep stairs, short lighted tunnel. Allow 1.5 hrs. Best in early morning before heat and crowds.</div>
       <div class="act-note"><strong>Reserve:</strong> hawaiistateparks.org · $5/person + $10 parking. Book weeks ahead.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:00 am</div></div><div class="act-body">
-      <div class="act-name">Makapu'u Point Lighthouse Trail <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">2 mi paved trail, moderate incline up Oahu's southeast cape. Spectacular coastal views, offshore islets, the historic red-roofed lighthouse. Opens 7 am, no reservation needed. Best light in the morning.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$5/person (non-resident) · Free for Hawai'i residents w/ ID</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$10/vehicle (non-resident) · Free for residents</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 6am–6pm · Last entry 4:30pm · Closed Dec 25 & Jan 1</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://dlnr.hawaii.gov/dsp/parks/oahu/diamond-head-state-monument/" target="_blank">dlnr.hawaii.gov — Diamond Head</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Reservation required for non-residents at hawaiistateparks.org. Credit card only — no cash. Book weeks ahead for peak season.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Diamond+Head+State+Monument/@21.2566,-157.8045,15z" target="_blank">📍 Diamond Head State Monument</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Midday</div>
+  <div class="day-section-label">Late Morning</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:30 am</div></div><div class="act-body">
-      <div class="act-name">Hanauma Bay Snorkel <span class="act-tag tag-adventure">Adventure</span></div>
-      <div class="act-detail">Hawaii's premier protected marine sanctuary — crystal-clear water, diverse tropical fish, frequent sea turtles. Mandatory short educational video on arrival. Gear rentals on-site. Go on the left side of the bay for better fish diversity.</div>
-      <div class="act-note"><strong>Reserve:</strong> hanaumabaystatepark.org — timed slots open 2 days ahead at 7 am. $25/person. Sells out fast.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:30 am</div></div><div class="act-body">
+      <div class="act-name">Bishop Museum <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Hawaii's premier natural history and cultural museum — the largest collection of Hawaiian artifacts in the world. Polynesian cultural exhibits, lava specimens, the iconic Hawaiian Hall with its cast-iron balconies. Science Adventure Center is excellent. Allow 2–3 hours.</div>
+      <div class="act-note"><strong>Entry:</strong> $38.95/adult · Open 9 am–5 pm daily.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$38.95/adult (weekday) · $35.95 seniors · $30.95 youth (4–17) · Off-season discounted rates apply Mon–Fri Mar 23–May 29 — check website</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$16/vehicle (non-resident) · $8 for Hawai'i residents</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 9am–5pm (last admission 4pm) · Closed Thanksgiving & Christmas</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.bishopmuseum.org/visit/" target="_blank">bishopmuseum.org</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">1525 Bernice St, Honolulu. Book online for potential discounts. Credit card only — no cash accepted.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Bishop+Museum/@21.3136,-157.8698,17z" target="_blank">📍 Bishop Museum, 1525 Bernice St</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Afternoon & Evening</div>
+  <div class="day-section-label">Afternoon</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:00 pm</div></div><div class="act-body">
-      <div class="act-name">Kailua Beach + Mokulua Islands Kayak <span class="act-tag tag-beach">Beach</span></div>
-      <div class="act-detail">Kailua Beach is arguably the most beautiful beach on Oahu — turquoise, calm, powder sand backed by the Ko'olau mountains. Kayak rentals nearby for paddling out to the twin Mokulua Islands (The Mokes). Allow 2–3 hrs for the full paddle. Arrive early for parking.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
-      <div class="act-name">Dinner in Kailua: Faria <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">One of Oahu's best new restaurants. Hawaii-rooted Portuguese cuisine — bean soup, lau lau stew, tinned fish board, pasteis de nata. Warm, intimate. Reservations recommended.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:00 pm</div></div><div class="act-body">
+      <div class="act-name">Lyon Arboretum <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">200-acre research arboretum tucked into Manoa Valley — a living museum of tropical plants, orchids, palms, and Hawaiian native species. Trails wind through the forest past streams and waterfalls. Cool and lush even when Waikiki is hot. Free entry, donations welcome.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free (donations welcome)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking on site</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Mon–Fri 9am–3pm · Closed weekends & all state/federal holidays</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://manoa.hawaii.edu/lyon/" target="_blank">manoa.hawaii.edu/lyon</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">3860 Manoa Rd, Honolulu. Part of UH Mānoa. Note: arboretum has intermittent construction closures — check manoa.hawaii.edu/lyon before visiting. Suggested donation $10/person.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Harold+L.+Lyon+Arboretum/@21.3330,-157.8021,17z" target="_blank">📍 Lyon Arboretum, 3860 Manoa Rd</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:30 pm</div></div><div class="act-body">
+      <div class="act-name">Manoa Falls Trail <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Easy 1.6 mi round trip through a lush rainforest valley 15 min from Waikiki. Jurassic Park was filmed here. A beautiful waterfall at the end. Can be muddy — closed-toe shoes a must. Closed Mondays. $7 per vehicle parking.</div>
+      <div class="act-warn">Swimming not allowed at the waterfall pool. Wear waterproof shoes — the trail can be very muddy.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free trail · $5 parking fee at main trailhead lot</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$5/vehicle at main lot · Free street parking further down</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily sunrise to sunset · Closed Mondays</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://hawaiitrails.hawaii.gov/" target="_blank">hawaiitrails.hawaii.gov</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Trail is frequently muddy — waterproof closed-toe shoes essential. Swimming at the waterfall pool is NOT allowed (leptospirosis risk). Filmed in Jurassic Park and Catching Fire.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Manoa+Falls+Trail/@21.3348,-157.8024,16z" target="_blank">📍 Mānoa Falls Trailhead</a></div></div></div></div></div>
+  </div>
+  <div class="day-section-label">Evening — Waikiki</div>
+  <div class="activity-block">
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:30 pm</div></div><div class="act-body">
+      <div class="act-name">Dinner: Rainbow Drive-In or Chinatown <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Rainbow Drive-In (3308 Kanaina Ave): Oahu icon since 1961 — loco moco, mixed plates, teriyaki beef. Open till 9 pm. Or head into Chinatown for Highway Inn plate lunches or Kapa Hale for chef Keaka Lee's elevated local cooking.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Rainbow: ~$10–16/plate · Chinatown: ~$15–25/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Rainbow: free lot · Chinatown: paid street/lots</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Rainbow: daily 7am–9pm · Highway Inn: Mon–Sat 9am–8pm</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Highway Inn: 680 Iwilei Rd. Kapa Hale: 50 N Hotel St. Both are beloved neighborhood favorites in Chinatown.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Chinatown+Honolulu+HI" target="_blank">📍 Chinatown, Honolulu</a></div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Chinatown+Honolulu+HI" target="_blank">📍 Chinatown, Honolulu</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:45 pm</div></div><div class="act-body">
+      <div class="act-name">Friday Night Fireworks at Waikiki <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Every Friday at 7:45 pm, the Hilton Hawaiian Village launches fireworks from the beach over Waikiki — a beloved weekly tradition. Free to watch from anywhere along the Waikiki shoreline. Grab a spot on the beach or a rooftop bar in advance. The whole strip comes alive.</div>
+      <div class="act-note">This only applies if Day 2 falls on a Friday (May 22). If not, skip or swap the evening with another activity.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free — watch from the beach or a bar</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Waikiki street/lot parking (~$3–5/hr)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Every Friday at 7:45pm · Launched from Hilton Hawaiian Village beachfront</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Best viewed from anywhere along the Waikiki shoreline. Only occurs on Fridays — check your travel dates.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Hilton+Hawaiian+Village+Waikiki+Beach+Resort/@21.2808,-157.8356,17z" target="_blank">📍 Hilton Hawaiian Village, Waikiki</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -420,35 +468,48 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-hero-bar day-hero-oahu">
     <div class="day-num-large">3</div>
     <div class="day-hero-label">Wednesday, May 20 · Oahu · With Friends</div>
-    <div class="day-hero-title">Adventure Day</div>
-    <div class="day-hero-date">Koko Crater · Kualoa Ranch · Pali Lookout</div>
+    <div class="day-hero-title">Southeast Coast</div>
+    <div class="day-hero-date">Makapu'u · Hanauma Bay · Kailua Beach · The Mokes</div>
   </div>
-  <div class="day-section-label">Early Morning</div>
+  <div class="day-section-label">Morning</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:00 am</div></div><div class="act-body">
-      <div class="act-name">Koko Crater Railway Hike <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">0.8 mi, 912 ft gain, 1,048 railway-tie steps straight up a dormant volcanic crater. Known locally as the "Stairmaster of Death" — brutal but short. Stunning 360° views of Hanauma Bay, Honolulu, and the Pacific at the top. Go at sunrise for best light and cooler temps. No reservation needed.</div>
-      <div class="act-warn">Very exposed and no shade — sunscreen and water essential. Extremely hot by 9 am.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 am</div></div><div class="act-body">
+      <div class="act-name">Makapu'u Point Lighthouse Trail <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">2 mi paved trail up Oahu's southeast cape. Spectacular coastal views, offshore islets, the historic red-roofed lighthouse. Opens 7 am, no reservation needed. The tidepools below are accessible via a short side trail — worth checking. Best in early morning light.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking lot (fills early — arrive by 7am)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 7am–7:45pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://dlnr.hawaii.gov/dsp/parks/oahu/makapu-u-point-lighthouse-trail/" target="_blank">dlnr.hawaii.gov — Makapu'u Trail</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">No reservation needed. 2 miles paved — stroller friendly. Side trail leads to tidepools below the lighthouse.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Makapu%27u+Point+Lighthouse+Trail/@21.3098,-157.6503,15z" target="_blank">📍 Makapu'u Point Lighthouse Trail</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:30 am</div></div><div class="act-body">
+      <div class="act-name">Waiāhole Beach Park <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">A hidden gem on the windward coast — a black sand beach tucked against lush mountains with almost no crowds. Great spot for a short stop between Makapu'u and Kailua. Free parking. The contrast of dark sand against turquoise water is stunning.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free roadside parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Located on the windward coast (Kamehameha Hwy). Quiet and uncrowded. Black volcanic sand. No facilities — bring water and snacks.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Waiahole+Beach+Park/@21.4566,-157.8393,16z" target="_blank">📍 Waiāhole Beach Park</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Late Morning – Afternoon</div>
+  <div class="day-section-label">Midday</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">10:00 am</div></div><div class="act-body">
-      <div class="act-name">Kualoa Ranch <span class="act-tag tag-adventure">Adventure</span></div>
-      <div class="act-detail">4,000-acre working ranch at the base of the Ko'olau Mountains — filming site for Jurassic Park, LOST, Jumanji, Kong: Skull Island. Choose from ATV/UTV tours, zip-lining, horseback riding, or the movie sites bus tour. The UTV off-road adventure is spectacular. Book at kualoa.com.</div>
-      <div class="act-note"><strong>Book:</strong> kualoa.com — half-day from $199. Allow 3–4 hrs.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:00 am</div></div><div class="act-body">
+      <div class="act-name">Hanauma Bay Snorkel <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Hawaii's premier protected marine sanctuary — crystal-clear water, diverse tropical fish, frequent sea turtles. Mandatory short educational video on arrival. Gear rentals on-site. Go on the left side of the bay for better fish diversity. Allow 2 hours.</div>
+      <div class="act-note"><strong>Reserve:</strong> hanaumabaystatepark.org — timed slots open 2 days ahead at 7 am. $25/person. Sells out fast.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$25/person (non-resident, age 13+) · Free for children 12 & under, active military & HI residents</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$3/vehicle · $1 for locals · 300 stalls — fills fast</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Wed–Sun 6:45am–4pm (last entry 1:30pm) · CLOSED every Monday & Tuesday</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.honolulu.gov/dpr/hanauma-bay-nature-preserve/" target="_blank">honolulu.gov — Hanauma Bay</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Reservation required 2 days in advance at 7am HST — slots sell out in minutes. Mandatory 9-min educational video before beach access. Snorkel gear rentals ~$25 on site.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Hanauma+Bay+Nature+Preserve/@21.2690,-157.6944,15z" target="_blank">📍 Hanauma Bay Nature Preserve</a></div></div></div></div></div>
+  </div>
+  <div class="day-section-label">Afternoon & Evening</div>
+  <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:00 pm</div></div><div class="act-body">
-      <div class="act-name">Nu'uanu Pali Lookout <span class="act-tag tag-culture">Culture</span></div>
-      <div class="act-detail">Dramatic windy cliffside 1,200 ft above the Windward Coast. Site of King Kamehameha I's decisive 1795 battle. Short 5-min walk from parking. Extremely windy — hold onto everything loosely. $7 parking fee. One of the most dramatic viewpoints in Hawaii.</div>
-    </div></div>
-  </div>
-  <div class="day-section-label">Evening</div>
-  <div class="activity-block">
+      <div class="act-name">Kailua Beach + Mokulua Islands Kayak <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Kailua Beach is arguably the most beautiful beach on Oahu — turquoise, calm, powder sand backed by the Ko'olau mountains. Kayak rentals nearby for paddling out to the twin Mokulua Islands (The Mokes). Allow 2–3 hrs for the full paddle. Arrive early for parking.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Beach: Free · Kayak rentals: ~$30–50/hr</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking at Kailua Beach Park</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Kailua Beach Park: daily sunrise–8pm</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Multiple kayak rental companies on Kailua Beach Rd (Twogood Kayaks, Kailua Sailboards). Allow 2–3 hrs for the full round-trip paddle to the Mokes.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kailua+Beach+Park/@21.3924,-157.7194,15z" target="_blank">📍 Kailua Beach Park</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
-      <div class="act-name">Dinner: Fete (Downtown Honolulu) <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">Brooklyn-meets-Hawaii bistro in Chinatown. Kualoa Ranch pork specials, carbonara with Portuguese sausage, Korean fried chicken sandwich, local fish of the day. Great cocktails. Open Mon–Sat 11 am–10 pm. Reserve a table.</div>
-    </div></div>
+      <div class="act-name">Dinner in Kailua: Faria <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">One of Oahu's best new restaurants. Hawaii-rooted Portuguese cuisine — bean soup, lau lau stew, tinned fish board, pasteis de nata. Warm, intimate. Reservations recommended.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$20–35/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free street parking in Kailua town</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Check current hours on Google · Reservations strongly recommended</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Hawaii-rooted Portuguese cuisine in Kailua town. One of Oahu's best newer restaurants.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Faria+restaurant+Kailua+Oahu+Hawaii" target="_blank">📍 Faria, Kailua Town</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -457,39 +518,50 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-hero-bar day-hero-oahu">
     <div class="day-num-large">4</div>
     <div class="day-hero-label">Thursday, May 21 · Oahu · With Friends</div>
-    <div class="day-hero-title">North Shore Day</div>
-    <div class="day-hero-date">Ehukai Pillbox · Waimea Valley · Haleiwa · Shave Ice</div>
+    <div class="day-hero-title">Adventure + Windward Coast</div>
+    <div class="day-hero-date">Koko Head · Kualoa Ranch · Byodo-in Temple · Pali Lookout</div>
   </div>
-  <div class="day-section-label">Morning</div>
+  <div class="day-section-label">Early Morning</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:30 am</div></div><div class="act-body">
-      <div class="act-name">Breakfast: Sunrise Shack (North Shore) <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">Cult-favorite North Shore roadside stand. Acai bowls, papaya bowls, coffee drinks. The vibe of the North Shore at sunrise with a bowl in hand is worth the early start.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:00 am</div></div><div class="act-body">
-      <div class="act-name">Ehukai Pillbox Trail <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">~1 hr round trip, steep but short. Climbs to WWII concrete bunkers with panoramic views of Sunset Beach and the entire North Shore. Park near Sunset Elementary School. Ropes assist the steepest section. Can be muddy after rain — closed-toe shoes.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:00 am</div></div><div class="act-body">
-      <div class="act-name">Waimea Valley & Waimea Falls <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">Paved 1.5 mi walk through botanical gardens and Hawaiian cultural sites to a swimmable waterfall pool. Life jackets provided for swimming. Check swim conditions ahead — lifeguards decide daily at 9 am. Closed Mon–Tue.</div>
-      <div class="act-note"><strong>Entry:</strong> ~$26/adult. Wed–Sun only. waimeavalley.net</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:00 am</div></div><div class="act-body">
+      <div class="act-name">Koko Head Crater Hike <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Only 0.45 miles to the summit, but you'll climb 1,048 old railway tie stairs — 930 feet of elevation gain. Known locally as the "Stairmaster of Death," it's brutal but short. Stunning 360° views of Hanauma Bay, Honolulu, and the Pacific. Go at sunrise for best light and cooler temps. No reservation needed.</div>
+      <div class="act-warn">Very exposed with no shade — sunscreen and water essential. Extremely hot by 9 am.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking at Koko Head District Park</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Best before 8am to beat the heat</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">No reservation required. 1,048 railway-tie stairs — very steep and exposed with no shade. Extremely hot by 9am. Bring water and sunscreen.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Koko+Head+Crater+Trail/@21.2904,-157.6977,15z" target="_blank">📍 Koko Head Crater Trail</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Afternoon & Evening</div>
+  <div class="day-section-label">Late Morning – Afternoon</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:30 pm</div></div><div class="act-body">
-      <div class="act-name">North Shore Shrimp Trucks <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">A North Shore rite of passage. Giovanni's is the most famous white truck. Garlic butter shrimp with two scoops of rice is the move. Multiple competing trucks — any with a line is a good choice. Eat at picnic tables. Cash-friendly.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:00 pm</div></div><div class="act-body">
-      <div class="act-name">Haleiwa Town + Matsumoto Shave Ice <span class="act-tag tag-culture">Culture</span></div>
-      <div class="act-detail">Stroll historic Haleiwa — surf shops, galleries, local boutiques. Matsumoto's Shave Ice (66-111 Kamehameha Hwy) is an island institution since 1951. Add ice cream at the bottom and azuki beans. Island Snow across the street is equally excellent.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:00 pm</div></div><div class="act-body">
-      <div class="act-name">Sunset at Sunset Beach <span class="act-tag tag-beach">Beach</span></div>
-      <div class="act-detail">Grab a spot on the sand for one of the best golden-hour sunsets on the island. The North Shore glows in the late afternoon light. No agenda needed — just sit and watch the sky change.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">10:00 am</div></div><div class="act-body">
+      <div class="act-name">Kualoa Ranch <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">4,000-acre working ranch at the base of the Ko'olau Mountains — filming site for Jurassic Park, LOST, Jumanji, Kong: Skull Island. Choose from ATV/UTV tours, zip-lining, horseback riding, or the movie sites bus tour. The UTV off-road adventure is spectacular.</div>
+      <div class="act-note"><strong>Book:</strong> kualoa.com — half-day from $199. Allow 3–4 hrs.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Tours from $63 (Movie Sites, 1.5hr) · UTV from ~$167/person · Zipline from ~$206/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking on site</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Check-in from ~7:30am · Tours run morning through early afternoon</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.kualoa.com/" target="_blank">kualoa.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Book well in advance — popular tours sell out. Each tour is 1.5–3 hrs. Half-day and full-day packages available. No bags or alcohol.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kualoa+Ranch/@21.5221,-157.8376,15z" target="_blank">📍 Kualoa Ranch, 49-560 Kamehameha Hwy</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">2:30 pm</div></div><div class="act-body">
+      <div class="act-name">The Byodo-in Temple <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">A replica of a 900-year-old Japanese temple tucked dramatically against the sheer green Ko'olau cliffs in the Valley of the Temples. Koi-filled reflecting pond, peacocks roaming the grounds, and a massive bronze Buddha inside. One of the most photogenic and serene spots on the island.</div>
+      <div class="act-note"><strong>Entry:</strong> $10/person + $6/car. byodo-in.com</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$7/adult (ages 13–64) · $6 seniors (65+) · $4 children (2–12)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$6/hour on site</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 8:30am–4:30pm · Last entrance 4:15pm · Closed Thanksgiving & Christmas</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://byodo-in.com/" target="_blank">byodo-in.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">47-200 Kahekili Hwy, Kaneohe — inside Valley of the Temples Memorial Park. Remove shoes before entering the temple. A place of prayer — speak quietly and dress respectfully.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Byodo-In+Temple/@21.4350,-157.8413,16z" target="_blank">📍 Byodo-In Temple, 47-200 Kahekili Hwy</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">4:30 pm</div></div><div class="act-body">
+      <div class="act-name">Nu'uanu Pali Lookout <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Dramatic windy cliffside 1,200 ft above the Windward Coast. Site of King Kamehameha I's decisive 1795 battle. Short 5-min walk from parking. Extremely windy — hold onto hats and glasses. $7 parking fee. One of the most dramatic viewpoints in Hawaii.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free entry</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$7/vehicle</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 9am–4pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://dlnr.hawaii.gov/dsp/parks/oahu/nuuanu-pali-state-wayside/" target="_blank">dlnr.hawaii.gov — Nu'uanu Pali</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Site of King Kamehameha I's decisive 1795 battle. Very windy — hold hats, sunglasses, and loose items firmly.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Nu%27uanu+Pali+Lookout/@21.3659,-157.7978,15z" target="_blank">📍 Nu'uanu Pali Lookout</a></div></div></div></div></div>
+  </div>
+  <div class="day-section-label">Evening</div>
+  <div class="activity-block">
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
+      <div class="act-name">Dinner: Fete (Downtown Honolulu) <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Brooklyn-meets-Hawaii bistro in Chinatown. Kualoa Ranch pork specials, carbonara with Portuguese sausage, Korean fried chicken sandwich, local fish of the day. Great cocktails. Open Mon–Sat 11 am–10 pm. Reserve a table.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$20–35/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Street parking in Chinatown</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Mon–Sat 11am–10pm</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">2 N Hotel St, Chinatown. Reservations recommended. Kualoa Ranch pork specials when available.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Fete/@21.3047,-157.8626,17z" target="_blank">📍 Fete, 2 N Hotel St, Chinatown</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -498,39 +570,57 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-hero-bar day-hero-oahu">
     <div class="day-num-large">5</div>
     <div class="day-hero-label">Friday, May 22 · Oahu · With Friends</div>
-    <div class="day-hero-title">History & Culture</div>
-    <div class="day-hero-date">Pearl Harbor · Chinatown · Manoa Falls · Iolani Palace</div>
+    <div class="day-hero-title">North Shore Day</div>
+    <div class="day-hero-date">Ehukai Pillbox · Waimea Valley · Kawela Beach · Ted's Bakery · Haleiwa</div>
   </div>
   <div class="day-section-label">Morning</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">8:00 am</div></div><div class="act-body">
-      <div class="act-name">Pearl Harbor National Memorial <span class="act-tag tag-culture">Culture</span></div>
-      <div class="act-detail">One of the most significant WWII sites in the world. The USS Arizona Memorial boat tour is the centerpiece — the ship lies submerged with 1,177 crew members aboard. Budget 3–4 hours. Optional add-ons: Battleship Missouri, Pacific Aviation Museum.</div>
-      <div class="act-note"><strong>Book:</strong> recreation.gov well in advance. Free entry; boat tours require timed tickets.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:30 am</div></div><div class="act-body">
+      <div class="act-name">Breakfast: Sunrise Shack (North Shore) <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Cult-favorite North Shore roadside stand. Acai bowls, papaya bowls, coffee drinks. The quintessential North Shore breakfast stop — the vibe alone is worth the early start.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$10–15 per bowl</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free roadside parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily, early morning · Hours vary by location (typically 7am–4pm)</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.sunriseshack.com/" target="_blank">sunriseshack.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Multiple North Shore locations. Acai bowls, papaya bowls, cold brew coffee.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Sunrise+Shack+North+Shore+Oahu+Hawaii" target="_blank">📍 Sunrise Shack, North Shore</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:00 am</div></div><div class="act-body">
+      <div class="act-name">Ehukai Pillbox Trail <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">~1 hr round trip, steep but short. Climbs to WWII concrete bunkers with panoramic views of Sunset Beach and the entire North Shore. Park near Sunset Elementary School. Ropes assist the steepest section. Can be muddy after rain — closed-toe shoes.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free street parking near Sunset Elementary School (59-360 Ke Nui Rd)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Best in early morning</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">No reservation needed. Ropes assist the steepest section — can be very muddy after rain. Closed-toe shoes required.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ehukai+Pillbox+Hike/@21.6647,-158.0508,15z" target="_blank">📍 Ehukai Pillbox Trailhead</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:00 am</div></div><div class="act-body">
+      <div class="act-name">Waimea Valley & Waimea Falls <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Paved 1.5 mi walk through botanical gardens and Hawaiian cultural sites to a swimmable waterfall pool. Life jackets provided for swimming. Check swim conditions ahead — lifeguards decide daily at 9 am. Closed Mon–Tue.</div>
+      <div class="act-note"><strong>Entry:</strong> ~$26/adult. Wed–Sun only. waimeavalley.net</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$25/adult · $14 ages 4–12 · $18 seniors (62+) · Free under 4</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with admission</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily · Hours vary — check waimeavalley.net</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.waimeavalley.net/" target="_blank">waimeavalley.net</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Open daily (previously closed Mon/Tue but this has changed — verify at waimeavalley.net). Life jackets required &amp; provided for swimming. Lifeguards make swim call at 9am daily.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Waimea+Valley/@21.6382,-158.0596,15z" target="_blank">📍 Waimea Valley, 59-864 Kamehameha Hwy</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Afternoon</div>
+  <div class="day-section-label">Afternoon & Evening</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">12:30 pm</div></div><div class="act-body">
-      <div class="act-name">Lunch: Chinatown Honolulu <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">Highway Inn for multicultural plate lunches (kalua pig, lau lau, poke, mochiko chicken), or Kapa Hale for chef Keaka Lee's elevated local cooking. Both are on the same stretch of downtown.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:00 pm</div></div><div class="act-body">
+      <div class="act-name">Lunch: Ted's Bakery <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">A legendary North Shore institution near Sunset Beach. Famous for cream pies, but their plate lunches are the real hidden gem — local-style garlic shrimp, chicken katsu, and Hawaiian beef stew plates. A North Shore staple since 1987. tedsbakery.com/menu</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$12–18 per plate</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily (check current hours — typically 7am–8pm)</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.tedsbakery.com/menu" target="_blank">tedsbakery.com/menu</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">59-024 Kamehameha Hwy near Sunset Beach. Cash or card. Famous cream pies and solid plate lunches.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ted%27s+Bakery/@21.6739,-158.0430,17z" target="_blank">📍 Ted's Bakery, 59-024 Kamehameha Hwy</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">2:30 pm</div></div><div class="act-body">
-      <div class="act-name">Manoa Falls Trail <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">Easy 1.6 mi round trip through a lush rainforest valley 15 min from Waikiki. Jurassic Park was filmed here. A beautiful waterfall at the end. Can be muddy — closed-toe shoes a must. Swimming not allowed at the pool.</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:00 pm</div></div><div class="act-body">
-      <div class="act-name">Iolani Palace <span class="act-tag tag-culture">Culture</span></div>
-      <div class="act-detail">The only royal palace on US soil — built 1882 by King Kalakaua. Deeply significant for Hawaiian sovereignty history; Queen Lili'uokalani was imprisoned here after the 1893 overthrow. Audio self-guided tours Tue–Sat 9 am–4 pm. Closed Mon/Sun.</div>
-      <div class="act-note">Entry ~$22/adult. iolanipalace.org</div>
-    </div></div>
-  </div>
-  <div class="day-section-label">Evening</div>
-  <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:30 pm</div></div><div class="act-body">
-      <div class="act-name">Dinner: MW Restaurant or Nami Kaze <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">MW Restaurant: Pacific Rim cuisine — the mochi-crusted Kona Kanpachi is legendary. Nami Kaze: 2023 James Beard Award semifinalist. Both require reservations — book well ahead.</div>
-    </div></div>
+      <div class="act-name">Kawela Bay + Sunset Beach <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Kawela Bay (just past Turtle Bay Resort) is a beautiful, calm, tree-lined bay that's often overlooked by tourists — perfect for a swim and hammock nap. Then continue along to Sunset Beach for the legendary North Shore shoreline. In May the waves are calmer but the setting is still epic.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free roadside/lot parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Kawela Bay is just past Turtle Bay Resort — calm and tree-lined. Sunset Beach is famous for massive winter surf (calmer in May). Both are on Kamehameha Hwy.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Sunset+Beach/@21.6777,-158.0467,15z" target="_blank">📍 Sunset Beach, North Shore</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">4:30 pm</div></div><div class="act-body">
+      <div class="act-name">Haleiwa Town + Matsumoto Shave Ice <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Stroll historic Haleiwa — surf shops, galleries, local boutiques. Matsumoto's Shave Ice (66-111 Kamehameha Hwy) is an island institution since 1951. Add ice cream at the bottom and azuki beans. Island Snow across the street is equally excellent.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Matsumoto shave ice: ~$5–9 · Browsing town: free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free public parking lots in Haleiwa</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Matsumoto's: daily 9am–6pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.matsumotoshaveice.com/" target="_blank">matsumotoshaveice.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">66-111 Kamehameha Hwy, Haleiwa. Island Snow across the street is equally beloved. Add ice cream at the bottom and azuki beans.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Matsumoto+Shave+Ice/@21.5940,-158.1046,17z" target="_blank">📍 Matsumoto Shave Ice, 66-111 Kamehameha Hwy</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:00 pm</div></div><div class="act-body">
+      <div class="act-name">North Shore Shrimp Trucks <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">A North Shore rite of passage. Giovanni's is the most famous white truck. Garlic butter shrimp with two scoops of rice is the move. Multiple competing trucks near Kahuku — any with a line is a good choice. Eat at picnic tables. Cash-friendly.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$13–18 per plate</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free roadside parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Typically 10am–5pm or until sold out · Giovanni's is usually open 10:30am</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Giovanni's White Shrimp Truck is the most famous (66-472 Kamehameha Hwy, Haleiwa). Cash-friendly. Order the garlic butter shrimp with two scoops rice.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Giovanni%27s+Original+White+Shrimp+Truck/@21.6756,-157.9962,15z" target="_blank">📍 Giovanni's Shrimp Truck</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -538,35 +628,52 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
 <div class="page" id="page-day6"><div class="day-page">
   <div class="day-hero-bar day-hero-oahu">
     <div class="day-num-large">6</div>
-    <div class="day-hero-label">Saturday, May 23 · Oahu · Last full group day</div>
-    <div class="day-hero-title">Lanikai + Last Together</div>
-    <div class="day-hero-date">Pillbox hike · beach · send-off dinner with friends</div>
+    <div class="day-hero-label">Saturday, May 23 · Oahu · With Friends</div>
+    <div class="day-hero-title">History, Gardens & Ko Olina</div>
+    <div class="day-hero-date">Pearl Harbor · Ho'omaluhia Gardens · Ko Olina Lagoons</div>
   </div>
   <div class="day-section-label">Morning</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:30 am</div></div><div class="act-body">
-      <div class="act-name">Lanikai Pillbox Trail <span class="act-tag tag-hike">Hike</span></div>
-      <div class="act-detail">2 mi, steep out of the gate, to WWII concrete bunkers with one of the best views on the island — turquoise Lanikai Beach, the twin Mokulua Islands, Ko'olau mountain backdrop. Best in early morning light. Park at Kailua Beach Park and walk to the trailhead (15 min).</div>
-    </div></div>
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:00 am</div></div><div class="act-body">
-      <div class="act-name">Lanikai Beach <span class="act-tag tag-beach">Beach</span></div>
-      <div class="act-detail">One of the most beautiful beaches in America — calm, turquoise, powder sand, ringed by the Ko'olau mountains. This is the group's last beach day together. Take it slow.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">8:00 am</div></div><div class="act-body">
+      <div class="act-name">Pearl Harbor National Memorial <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">One of the most significant WWII sites in the world. The USS Arizona Memorial boat tour is the centerpiece — the ship lies submerged with 1,177 crew members aboard. Budget 3–4 hours. Optional add-ons: Battleship Missouri, Pacific Aviation Museum.</div>
+      <div class="act-note"><strong>Book:</strong> recreation.gov well in advance. Free entry; boat tours require timed tickets.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Visitor Center: FREE · USS Arizona Memorial boat: $1 reservation fee per person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$7/day at visitor center</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 7am–5pm · Closed Thanksgiving, Christmas & New Year's Day · Boat tours 8am–3:30pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.recreation.gov/ticket/facility/233338" target="_blank">recreation.gov — USS Arizona tickets</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Reserve USS Arizona boat tickets up to 8 weeks in advance at recreation.gov. NO BAGS allowed on site — paid bag storage available at entrance. Arrive 1 hour before your reservation.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Pearl+Harbor+National+Memorial/@21.3645,-157.9400,15z" target="_blank">📍 Pearl Harbor National Memorial</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">Afternoon</div></div><div class="act-body">
-      <div class="act-name">Kailua Lunch + Explore <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">Wander Kailua town — great cafes, boutiques, the famous Kalapawai Market for deli sandwiches and grab-and-go. A relaxed last afternoon before tomorrow's transitions.</div>
-    </div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:00 pm</div></div><div class="act-body">
+      <div class="act-name">Lunch: Chinatown Honolulu <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Highway Inn for multicultural plate lunches (kalua pig, lau lau, poke, mochiko chicken), or Kapa Hale for chef Keaka Lee's elevated local cooking. Both are beloved neighborhood favorites.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$12–25/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Paid street/lot parking in Chinatown district</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Highway Inn: Mon–Sat 9am–8pm · Kapa Hale: Tue–Sat lunch & dinner</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Highway Inn: 680 Iwilei Rd — multicultural plate lunches. Kapa Hale: 50 N Hotel St — chef Keaka Lee's elevated local cooking.</div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">2:30 pm</div></div><div class="act-body">
+      <div class="act-name">Ho'omaluhia Botanical Garden <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">A breathtaking 400-acre botanical garden set against the dramatic vertical Ko'olau cliffs on the windward side — the most photogenic backdrop on the island. Free entry. Winding paths through lush themed gardens representing different tropical regions of the world. Bring a blanket and stay for the afternoon light.</div>
+      <div class="act-warn">Closed Thursdays. Open 9 am–4 pm. Free admission.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free on site</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 9am–4pm · CLOSED Thursdays</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.honolulu.gov/parks/hbg.html" target="_blank">honolulu.gov — Ho'omaluhia</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">45-680 Luluku Rd, Kaneohe. Stunning Ko'olau mountain backdrop — most photogenic spot on the island. Bring a blanket and enjoy the afternoon light.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ho%27omaluhia+Botanical+Garden/@21.3981,-157.8093,15z" target="_blank">📍 Ho'omaluhia Botanical Garden</a></div></div></div></div></div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:00 pm</div></div><div class="act-body">
+      <div class="act-name">Ko Olina Lagoons (West Oahu) <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Four man-made protected lagoons on the west Oahu coast — calm, crystal-clear, and stunning at sunset. Completely different from the windward side: drier, sunnier, more resort-y. Gets busy quickly in the morning, but late afternoon is calmer. Free parking with validation at nearby shops.</div>
+      <div class="act-warn">Gets busy quickly — arrive by 5 pm for a good spot before sunset.</div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free beach access</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free with validation at Ko Olina shops · Limited stalls — fills fast</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Best early morning or late afternoon</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Four man-made protected lagoons on the west coast. Calmer and more protected than the open beach. Gets busy quickly — arrive early for a good spot.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ko+Olina+Lagoons/@21.3338,-158.1242,15z" target="_blank">📍 Ko Olina Lagoons, West Oahu</a></div></div></div></div></div>
   </div>
-  <div class="day-section-label">Evening – Send-off dinner</div>
+  <div class="day-section-label">Evening — Send-off dinner</div>
   <div class="activity-block">
-    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
-      <div class="act-name">Group Farewell Dinner <span class="act-tag tag-food">Food</span></div>
-      <div class="act-detail">Choose a special spot for the group's last dinner — Helena's Hawaiian Food (if open that day: Tue–Fri only), Faria in Kailua, or book somewhere meaningful to the group. Tomorrow your friends head home and you head to a volcano.</div>
+    <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:30 pm</div></div><div class="act-body">
+      <div class="act-name">Group Farewell Dinner <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
+      <div class="act-detail">Choose a special spot for the group's last dinner — Faria in Kailua, MW Restaurant (Pacific Rim, mochi-crusted Kona Kanpachi), or Helena's Hawaiian Food if it's a Tuesday–Friday. Tomorrow your friends head home and you head to a volcano.</div>
       <div class="act-note"><strong>Also tonight:</strong> Book your interisland flight for tomorrow (HNL → KOA) if you haven't already. Hawaiian Airlines, morning or midday departure to maximize Big Island time.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$30–60/person (restaurant dependent)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Varies by restaurant</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Book in advance — reservations required at most quality spots</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Helena's only open Tue–Fri 10am–7:30pm. MW Restaurant (1538 Kapiʻolani Blvd) and Faria require reservations. Book 1–2 weeks ahead.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Helena%27s+Hawaiian+Food/@21.3201,-157.8619,17z" target="_blank">📍 Helena's Hawaiian Food, 1240 N School St</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -581,28 +688,36 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Morning – Farewell</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Morning</div></div><div class="act-body">
-      <div class="act-name">See friends off at HNL <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">See friends off at HNL <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Your friends depart HNL today. After saying goodbye, head to your own departure gate. You're booked on a separate flight — Hawaiian Airlines HNL → KOA (Kailua-Kona Airport). ~45 min flight. Pick up your Big Island rental car at KOA.</div>
       <div class="act-note"><strong>Book:</strong> HawaiianAirlines.com — ~$70–130. Fly morning or midday to maximize Day 1 on the island.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Interisland flight: ~$70–130 one way</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">HNL interisland terminal</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Hawaiian Airlines operates flights throughout the day</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.hawaiianairlines.com/" target="_blank">hawaiianairlines.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">HNL → KOA (Kailua-Kona Airport) is ~45 min. Book a morning or midday flight to maximize Big Island time. Pick up a separate rental car at KOA.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Daniel+K.+Inouye+International+Airport/@21.3245,-157.9251,15z" target="_blank">📍 Honolulu International Airport (HNL)</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon – Arrive Kona</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Afternoon</div></div><div class="act-body">
-      <div class="act-name">Check in + Explore Kailua-Kona <span class="act-tag tag-culture">Culture</span></div>
+      <div class="act-name">Check in + Explore Kailua-Kona <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Kailua-Kona is the west-side hub — restaurants, shopping, Kailua Bay waterfront. Stroll Alii Drive along the water, visit Ahu'ena Heiau (sacred Hawaiian temple at the edge of the bay), and get your bearings. Kona is drier and sunnier than Hilo.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free to walk Alii Drive</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Paid lots/meters on Alii Drive (~$1–2/hr)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Waterfront area open always</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Ahu'ena Heiau is at the edge of Kailua Bay — a sacred Hawaiian temple, open to respectful viewing from outside.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kailua-Kona,+HI/@19.6400,-155.9969,14z" target="_blank">📍 Kailua-Kona, Ali'i Drive</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:00 pm</div></div><div class="act-body">
-      <div class="act-name">Sunset at Kailua Bay <span class="act-tag tag-beach">Beach</span></div>
+      <div class="act-name">Sunset at Kailua Bay <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">West-facing Kona coast means incredible sunsets directly over the Pacific ocean — no haze, no islands in the way. Grab a drink from Huggo's On the Rocks or Lava Lava Beach Club, find a spot at the water's edge, and watch the sky turn.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free beach access · Drinks at Huggo's ~$15–18</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Alii Drive paid lots</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Sunset: ~6:30–7pm in May</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">West-facing coast gives unobstructed sunset views over the Pacific. Lava Lava Beach Club and Huggo's On the Rocks both have great sunset spots.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kailua+Bay/@19.6417,-155.9959,15z" target="_blank">📍 Kailua Bay, Kona</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Evening</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
-      <div class="act-name">Dinner: Umeke's Fish Market Bar & Grill <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Dinner: Umeke's Fish Market Bar & Grill <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Guy Fieri-approved Kona institution. Famous for fresh poke bowls — the avo poke nachos are legendary. Also: ahi fish tacos, garlic furikake chicken, Hawaiian plate lunches, excellent mai tais. Open 11 am–9 pm daily. Best poke on the Kona side.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$15–25/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking on site</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 11am–9pm</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">74-5599 Pawai Pl, Kailua-Kona. Best poke on the Kona side. No reservations needed. Avo poke nachos are legendary.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Umeke%27s+Fish+Market+Bar+%26+Grill/@19.6443,-155.9964,17z" target="_blank">📍 Umeke's Fish Market, 74-5599 Pawai Pl</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -618,44 +733,58 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Early Morning – Drive</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 am</div></div><div class="act-body">
-      <div class="act-name">Drive Kona → Hawai'i Volcanoes NP <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">Drive Kona → Hawai'i Volcanoes NP <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">~2 hour drive from Kona south through Ka'ū to the park entrance. The drive itself is striking — black lava fields giving way to cloud forest. Pack layers; it's cooler at elevation (~4,000 ft). Bring water and snacks, limited food inside the park.</div>
       <div class="act-note"><strong>Entry:</strong> $30/vehicle, valid 7 days. Pay at the gate or in advance at recreation.gov.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$30/vehicle — valid 7 days (covers both days in park)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with park pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Park open 24/7 · Visitor Center: daily 9am–5pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.nps.gov/havo/planyourvisit/index.htm" target="_blank">nps.gov/havo</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">~2 hour drive from Kona. Check current eruption and trail status at nps.gov/havo before departing. Pack layers — elevation ~4,000ft is noticeably cooler.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Hawaii+Volcanoes+National+Park/@19.4194,-155.2885,12z" target="_blank">📍 Hawai'i Volcanoes National Park</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Morning – Park Activities</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:30 am</div></div><div class="act-body">
-      <div class="act-name">Crater Rim Trail + Kīlauea Overlook <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">Crater Rim Trail + Kīlauea Overlook <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Walk the rim of the Kīlauea Caldera — one of the most surreal landscapes on earth. Steam vents, sulfur banks, and views into the massive volcanic crater. Various sections open depending on activity level. The Kīlauea Visitor Center is your first stop for current conditions.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Included with park pass ($30/vehicle)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with park pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Trails open daily · Access varies by eruption activity</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.nps.gov/havo/planyourvisit/lava2.htm" target="_blank">nps.gov/havo — Eruption status</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Start at Kīlauea Visitor Center for current trail conditions. Some sections close during high activity. Steam vents and sulfur banks are always accessible.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kilauea+Visitor+Center/@19.4288,-155.2577,16z" target="_blank">📍 Kīlauea Visitor Center, HVNP</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:00 am</div></div><div class="act-body">
-      <div class="act-name">Nāhuku (Thurston) Lava Tube <span class="act-tag tag-adventure">Adventure</span></div>
+      <div class="act-name">Nāhuku (Thurston) Lava Tube <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">A short, stunning hike begins in one of the wettest rainforests in the park before descending into a massive underground lava tube — you walk in one end and out the other. The lit section is ~0.4 miles and takes about 30 minutes. An eerie, otherworldly experience unlike anything else in Hawaii.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Included with park pass ($30/vehicle)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with park pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Lit section accessible during park hours</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.nps.gov/havo/" target="_blank">nps.gov/havo</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Short walk through a rainforest before the tube entrance. Lit section is ~0.4 miles — allow 30 min. A cool and eerie underground experience.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Nahuku+(Thurston+Lava+Tube)/@19.4188,-155.2373,16z" target="_blank">📍 Nāhuku (Thurston) Lava Tube</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:00 pm</div></div><div class="act-body">
-      <div class="act-name">Chain of Craters Road <span class="act-tag tag-adventure">Adventure</span></div>
+      <div class="act-name">Chain of Craters Road <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">A dramatic 19-mile road descending from 4,000 ft through vast hardened lava flows all the way to the ocean. Multiple overlooks, petroglyphs site (Pu'u Loa), and the point where old lava crossed the road and stopped. Ends at the sea. One of the most dramatic drives in the US.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Included with park pass ($30/vehicle)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with park pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Road open 24/7</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.nps.gov/havo/planyourvisit/chain-of-craters.htm" target="_blank">nps.gov/havo — Chain of Craters</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">19-mile road descending to the ocean. Pu'u Loa petroglyphs are a short 0.7mi walk from the road. Pack snacks — no services along the road.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Chain+of+Craters+Road/@19.3310,-155.1769,13z" target="_blank">📍 Chain of Craters Road, HVNP</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">3:30 pm</div></div><div class="act-body">
-      <div class="act-name">Punalu'u Black Sand Beach <span class="act-tag tag-beach">Beach</span></div>
+      <div class="act-name">Punalu'u Black Sand Beach <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">One of the most unique beaches in the world — jet black volcanic sand beach where endangered Hawaiian green sea turtles (honu) regularly haul out to rest on the sand. Free entry, free parking. Don't touch or approach the turtles. Snorkeling possible but rough. 30 min from Volcanoes NP.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking lot</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">One of Hawaii's most unique beaches — jet black volcanic sand with endangered green sea turtles (honu) resting onshore. Do NOT touch or approach turtles — it's a federal violation. Snorkeling possible but rough.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Punalu%27u+Black+Sand+Beach/@19.1308,-155.5061,15z" target="_blank">📍 Punalu'u Black Sand Beach</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Evening</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">After dark</div></div><div class="act-body">
-      <div class="act-name">Return to Kīlauea for night glow (if erupting) <span class="act-tag tag-adventure">Adventure</span></div>
+      <div class="act-name">Return to Kīlauea for night glow (if erupting) <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">If Kīlauea is actively erupting (check nps.gov/havo), return after dark for the lava glow — the caldera turns orange and red against a black night sky. It's one of the most primal, moving natural spectacles you can witness. The park is open 24 hrs. Drive time from Punalu'u: ~30 min.</div>
       <div class="act-lava">Check eruption status at: <strong>nps.gov/havo/planyourvisit/lava2.htm</strong> before heading back.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Included with park pass (park is open 24hrs)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Included with park pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Nighttime viewing: best after full dark (~8pm+)</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.nps.gov/havo/planyourvisit/lava2.htm" target="_blank">nps.gov/havo — Eruption status</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Only worthwhile if there is an active eruption. Check nps.gov/havo/planyourvisit/lava2.htm before returning. When active, the caldera glows orange-red — an unforgettable sight.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kilauea+Overlook/@19.4239,-155.2799,15z" target="_blank">📍 Kīlauea Overlook, HVNP</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Late</div></div><div class="act-body">
-      <div class="act-name">Dinner: The Rim at Volcano House or drive back to Kona <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Dinner: The Rim at Volcano House or drive back to Kona <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Volcano House (inside the park, on the crater rim) serves dinner with views of the caldera — atmospheric, especially at night during an eruption. Or drive back to Kona (~2 hrs) for Kona Brewing Co. or another local spot. It's a long but unforgettable day.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">The Rim dinner: ~$30–50/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Inside park — included with pass</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">The Rim: dinner typically 5–9pm (check ahead)</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.hawaiivolcanohouse.com/" target="_blank">hawaiivolcanohouse.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Inside the park on the caldera rim — atmospheric dinner with volcano views. Reservations recommended. Or drive ~2hrs back to Kona for Kona Brewing Co. (open till 9pm).</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Volcano+House/@19.4286,-155.2574,16z" target="_blank">📍 Volcano House, Hawai'i Volcanoes NP</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -670,41 +799,53 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Early Morning – Drive North</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 am</div></div><div class="act-body">
-      <div class="act-name">Waipio Valley Overlook <span class="act-tag tag-culture">Culture</span></div>
+      <div class="act-name">Waipio Valley Overlook <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">The "Valley of the Kings" — a sacred site where Hawaiian royalty once lived. From the lookout: a panorama of impossibly steep green valley walls, a black sand beach below, and a waterfall plunging from the cliffs. The road down is one of the steepest in the US (25% grade) and requires a 4WD vehicle. The overlook itself is spectacular and free.</div>
       <div class="act-note"><strong>Note:</strong> Hiking down is sensitive — the valley is a sacred Hawaiian place. Check current access guidance before attempting. Tour shuttles (~$70) are the respectful way to access the valley floor.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Overlook: Free · Valley floor shuttle tour: ~$70/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free small lot at the overlook</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Overlook accessible daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">The road down (25% grade) is not accessible without 4WD. Hiking down is culturally sensitive — valley is sacred Hawaiian land. Tour shuttles are the respectful way to access the valley floor.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Waipio+Valley+Overlook/@20.1148,-155.5924,14z" target="_blank">📍 Waipio Valley Overlook</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Mid Morning</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:30 am</div></div><div class="act-body">
-      <div class="act-name">'Akaka Falls State Park <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">'Akaka Falls State Park <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Easy 0.4 mi paved loop through a lush rainforest of giant bamboo, tropical flowers, and towering 'ōhi'a trees — ending at a viewpoint of 'Akaka Falls, a stunning 442-foot single-drop waterfall into the lush gorge below. One of the best easy hikes in Hawaii. Opens 8:30 am.</div>
       <div class="act-note">$10 parking at lot (or park on road for free). 30 min north of Hilo.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">$5/person (non-resident)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">$10/vehicle at the lot · Free parking on the road</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Daily 8:30am–5pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://dlnr.hawaii.gov/dsp/parks/hawaii/akaka-falls-state-park/" target="_blank">dlnr.hawaii.gov — 'Akaka Falls</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Easy 0.4mi paved loop. 442-foot single-drop waterfall — one of Hawaii's most spectacular. 30 min north of Hilo.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/%27Akaka+Falls+State+Park/@19.8551,-155.1538,15z" target="_blank">📍 'Akaka Falls State Park</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">11:30 am</div></div><div class="act-body">
-      <div class="act-name">Lunch in Hilo: Moon and Turtle or Hilo Bay Cafe <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Lunch in Hilo: Moon and Turtle or Hilo Bay Cafe <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Moon and Turtle (51 Kalakaua St): intimate, acclaimed restaurant with inventive ocean-to-table small plates — smokey sashimi, truffle mushroom risotto, ono ceviche. Closed Mon/Sun; Tue–Sat 5:30 pm+ for dinner, but check if lunch is available. Hilo Bay Cafe is the upscale waterfront lunch option with sushi, fresh fish, and views of Mauna Kea on a clear day.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Moon and Turtle: ~$25–40/person · Hilo Bay Cafe: ~$20–35</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Street parking in downtown Hilo</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Moon and Turtle: Tue–Sat dinner 5:30pm+ (lunch availability varies) · Hilo Bay Cafe: lunch & dinner daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Moon and Turtle at 51 Kalakaua St — inventive ocean-to-table small plates. Reservations essential. Hilo Bay Cafe on the Hilo waterfront — easier for lunch.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Moon+and+Turtle/@19.7292,-155.0906,17z" target="_blank">📍 Moon and Turtle, 51 Kalakaua St, Hilo</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">1:30 pm</div></div><div class="act-body">
-      <div class="act-name">Pololu Valley Lookout + Hike <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">Pololu Valley Lookout + Hike <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">At the very north tip of the island — drive along the dramatic Kohala Coast cliffs to the lookout, then hike 0.9 mi (round trip) down steep switchbacks to the isolated black sand beach and valley floor. Steep and can be slippery — wear real shoes. Stunning remote beauty, rarely crowds. The beach is not swimmable but the landscape is extraordinary.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking at the end of Akoni Pule Hwy (Hwy 270)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://dlnr.hawaii.gov/dsp/parks/hawaii/" target="_blank">dlnr.hawaii.gov — Big Island parks</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">0.9mi round trip steep hike to the isolated black sand beach below. Very slippery — wear real shoes. Beach is NOT safe for swimming but the scenery is extraordinary.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Pololu+Valley+Lookout/@20.2017,-155.7320,14z" target="_blank">📍 Pololu Valley Lookout</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Evening – Signature Experience</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:00 pm</div></div><div class="act-body">
-      <div class="act-name">Manta Ray Night Snorkel <span class="act-tag tag-adventure">Adventure</span></div>
+      <div class="act-name">Manta Ray Night Snorkel <span class="act-tag tag-adventure">Adventure</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">The Big Island's most iconic experience — snorkel in the dark off the Kona coast as 8–15 ft wingspan manta rays do barrel rolls directly beneath you, feeding on plankton attracted by underwater lights. They come within inches. No stingers, no danger. Guides hold a board you float on. It's surreal. Available most nights year-round; May conditions are excellent.</div>
       <div class="act-note"><strong>Book:</strong> Multiple operators in Kona — Manta Ray Night Snorkel (74-5583 Luhia St) has a 5.0-star rating. ~$100–130/person. Book weeks ahead.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$100–135/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Meet at operator's dock in Kona harbor</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Tours depart at dusk (typically 6–7pm) · Return ~9pm</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.mantaraynightsnorkelhawaii.com/" target="_blank">mantaraynightsnorkelhawaii.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Book weeks ahead — fills out fast. No stingers, no danger. Guides hold a board you float on while rays feed beneath you. May conditions are excellent.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Manta+Ray+Night+Snorkel+Kailua-Kona+Hawaii" target="_blank">📍 Manta Ray Snorkel, Kona Coast</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">After</div></div><div class="act-body">
-      <div class="act-name">Late dinner: Kona Brewing Co. or Merriman's <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Late dinner: Kona Brewing Co. or Merriman's <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Kona Brewing Co. (74-5612 Pawai Pl) is open till 9 pm and perfect post-snorkel — fresh poke, pizza, Cubano sandwich, draft Kona ales brewed on-site. Or if you booked ahead: Merriman's in Waimea (Upcountry) is the most acclaimed restaurant on the Big Island — farm-to-table Hawaiian cuisine, 90% local ingredients, incredible. Worth the drive.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Kona Brewing: ~$15–25/person · Merriman's: ~$40–65/person</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free parking at Kona Brewing · Merriman's has lot parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Kona Brewing: daily 11am–9pm · Merriman's: daily lunch & dinner</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.merrimanshawaii.com/" target="_blank">merrimanshawaii.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Kona Brewing Co: 74-5612 Pawai Pl — great post-snorkel spot, fresh ales brewed on site. Merriman's in Waimea (Upcountry): 65-1227 Opelo Rd — best restaurant on the Big Island, reservations essential.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Kona+Brewing+Co./@19.6438,-155.9968,17z" target="_blank">📍 Kona Brewing Co., 74-5612 Pawai Pl</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -719,32 +860,42 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Morning – Departure from Big Island</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Morning</div></div><div class="act-body">
-      <div class="act-name">Optional: Kona Coffee Farm Tour <span class="act-tag tag-culture">Culture</span></div>
+      <div class="act-name">Optional: Kona Coffee Farm Tour <span class="act-tag tag-culture">Culture</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">If you have time before your flight, the slopes south of Kona (Holualoa, Captain Cook area) are covered in world-famous Kona coffee farms. Many offer free or cheap tours and tastings — a completely different agricultural side of the Big Island and a great final morning activity.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free–$15 for most farm tours/tastings</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free at individual farms</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Most farms open 9am–4pm · Call ahead</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.konacoffeefarmers.org/" target="_blank">konacoffeefarmers.org</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Holualoa and Captain Cook area south of Kona. Many farms offer free tours and tastings. Great last morning activity before your flight.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/search/Kona+coffee+farms+Holualoa+Hawaii" target="_blank">📍 Kona Coffee Farms, Holualoa area</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Midday</div></div><div class="act-body">
-      <div class="act-name">Fly KOA → HNL <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">Fly KOA → HNL <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Book a midday flight back to Oahu (~45 min). This gives you a full afternoon on Oahu. Return your Big Island rental, check into HNL-area lodging for one final night.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$70–130 one way</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">KOA airport drop-off</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Multiple flights daily · ~45 min flight</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.hawaiianairlines.com/" target="_blank">hawaiianairlines.com</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Return Big Island rental car at KOA first. Book a midday flight to give yourself a full afternoon on Oahu.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ellison+Onizuka+Kona+International+Airport/@19.7388,-156.0456,14z" target="_blank">📍 Kona International Airport (KOA)</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">Afternoon</div></div><div class="act-body">
-      <div class="act-name">Lanikai Pillbox Trail (if you didn't do it Day 6) <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">Lanikai Pillbox Trail (if you didn't do it Day 6) <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">If you skipped the Lanikai Pillbox on Day 6, this is your chance — WWII bunkers with jaw-dropping views over turquoise Lanikai Beach and the Mokulua Islands. Best in late afternoon light. Park at Kailua Beach Park, 15 min walk to trailhead.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Park at Kailua Beach Park · 15-min walk to trailhead</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Best in late afternoon or early morning</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">2 miles steep out of the gate to WWII bunkers with jaw-dropping views of turquoise Lanikai Beach and the Mokulua Islands. Best in late afternoon golden light.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Lanikai+Pillbox+Hike/@21.3927,-157.7101,15z" target="_blank">📍 Lanikai Pillbox Trailhead, Kailua</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:00 pm</div></div><div class="act-body">
-      <div class="act-name">Final swim at Lanikai Beach <span class="act-tag tag-beach">Beach</span></div>
+      <div class="act-name">Final swim at Lanikai Beach <span class="act-tag tag-beach">Beach</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">One last swim in some of the most beautiful water in the world. Calm, turquoise, soft sand, mountains behind you. This is your goodbye to Hawaii.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Very limited — park at Kailua Beach Park and walk 10 min</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">One of the most beautiful beaches in the US. Calm, turquoise, soft sand. Park at Kailua Beach Park and access via the small beach paths on Mokulua Dr.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Lanikai+Beach/@21.3921,-157.7131,15z" target="_blank">📍 Lanikai Beach, Kailua</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Evening</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">7:30 pm</div></div><div class="act-body">
-      <div class="act-name">Farewell Dinner: Helena's Hawaiian Food <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Farewell Dinner: Helena's Hawaiian Food <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">The perfect final dinner — Michelin-recognized institution since 1946. Pipikaula-style short ribs, kalua pig, lomi salmon, steamed butterfish collar, poi, and haupia coconut pudding for dessert. Closed Mon/Sat/Sun — Wednesday works perfectly. A true farewell to Hawaiian food culture.</div>
       <div class="act-note">1240 N School St, Kalihi. Tue–Fri 10 am–7:30 pm. Yelp waitlist or walk in.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$15–25/person (cash or card)</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free street parking</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Tue–Fri 10am–7:30pm ONLY · CLOSED Mon, Sat & Sun</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">1240 N School St, Kalihi. Yelp waitlist or walk in. Wednesday works perfectly for Day 10. Pipikaula short ribs and butterfish collar are must-orders.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Helena%27s+Hawaiian+Food/@21.3201,-157.8619,17z" target="_blank">📍 Helena's Hawaiian Food, 1240 N School St</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -759,27 +910,35 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="day-section-label">Early Morning</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">5:45 am</div></div><div class="act-body">
-      <div class="act-name">Sunrise Hike: Kuliouou Ridge or Makapu'u <span class="act-tag tag-hike">Hike</span></div>
+      <div class="act-name">Sunrise Hike: Kuliouou Ridge or Makapu'u <span class="act-tag tag-hike">Hike</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Kuliouou Ridge Trail (east Honolulu): 2.1 mi ascent with views over Waimanalo and the southern Ko'olau mountains — spectacular at sunrise. Or revisit Makapu'u for a gentler last morning walk with early light over the turquoise sea.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Kuliouou Ridge: Free · Makapu'u: Free</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Free at both trailheads</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Open daily · Makapu'u from 7am · Kuliouou: sunrise to sunset</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Kuliouou Ridge (east Honolulu): 2.1mi, stunning Ko'olau views. Makapu'u: paved, gentle, great early light over the sea.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Makapu%27u+Point+Lighthouse+Trail/@21.3098,-157.6503,15z" target="_blank">📍 Makapu'u Lighthouse Trail (or Kuliouou Ridge)</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Late Morning</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">10:00 am</div></div><div class="act-body">
-      <div class="act-name">Last Poke Bowl + Pack <span class="act-tag tag-food">Food</span></div>
+      <div class="act-name">Last Poke Bowl + Pack <span class="act-tag tag-food">Food</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Maguro Brothers (Ward Village) or Ono Seafood (Kapahulu) — both do perfectly fresh poke to order. Get a bowl with white rice, ahi, minimal seasoning. Eat it outside if you can. Then pack, clean up, and start working toward the airport side of the island.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">~$12–18/bowl</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Ward Village paid lot (~$1–3)</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Maguro Brothers: check current hours · Ono Seafood: Tue–Sat 10am–6pm</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Maguro Brothers (Ward Village) or Ono Seafood (747 Kapahulu Ave). Get ahi, white rice, shoyu, sesame oil. Eat outside if you can.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Ono+Seafood/@21.2803,-157.8223,17z" target="_blank">📍 Ono Seafood, 747 Kapahulu Ave</a></div></div></div></div></div>
   </div>
   <div class="day-section-label">Afternoon – Departure</div>
   <div class="activity-block">
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">6:00 pm</div></div><div class="act-body">
-      <div class="act-name">Return rental car + Head to HNL <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">Return rental car + Head to HNL <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">Allow 2.5+ hours before your 9:40 pm departure. Return rental car first (allow buffer at the lot), then shuttle to the terminal, check bags, clear security. HNL security can be slow during evening departure banks.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">HNL parking: N/A — return car at rental lot</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">Rental car return at HNL</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Departure 9:40pm — arrive airport by 6:30pm at latest</div></div><div class="act-detail-card"><div class="adc-label">Official website</div><div class="adc-value"><a href="https://www.fly2hawaii.com/" target="_blank">fly2hawaii.com — HNL info</a></div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Allow extra time for the rental car return shuttle and HNL security, which can be slow during evening departure banks.</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Daniel+K.+Inouye+International+Airport/@21.3245,-157.9251,15z" target="_blank">📍 Honolulu International Airport (HNL)</a></div></div></div></div></div>
     <div class="act-item"><div class="act-time-col"><div class="act-time-text">9:40 pm</div></div><div class="act-body">
-      <div class="act-name">Depart HNL → LAX (United 1169) <span class="act-tag tag-travel">Travel</span></div>
+      <div class="act-name">Depart HNL → LAX (United 1169) <span class="act-tag tag-travel">Travel</span>
+      <span class="act-expand-icon">▾</span></div>
       <div class="act-detail">LAX overnight, then United 1970 departs 11:15 am May 29 → EWR. Mahalo, Hawai'i.</div>
-    </div></div>
+    </div>
+    <div class="act-details-panel"><div class="act-details-inner"><div class="act-detail-card"><div class="adc-label">Admission</div><div class="adc-value">Flight: already booked</div></div><div class="act-detail-card"><div class="adc-label">Parking</div><div class="adc-value">N/A</div></div><div class="act-detail-card"><div class="adc-label">Hours</div><div class="adc-value">Departs 9:40pm HNL · Arrives LAX · Continues UA 1970 to EWR May 29 at 11:15am</div></div><div class="act-detail-card"><div class="adc-label">Notes</div><div class="adc-value">Mahalo, Hawai'i. HNL → LAX (UA 1169) → EWR (UA 1970, arriving May 29 11:15am).</div></div><div class="act-detail-card"><div class="adc-label">Directions</div><div class="adc-value"><a href="https://www.google.com/maps/place/Daniel+K.+Inouye+International+Airport/@21.3245,-157.9251,15z" target="_blank">📍 Honolulu International Airport (HNL)</a></div></div></div></div></div>
   </div>
 </div></div>
 
@@ -1071,7 +1230,7 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
   <div class="food-island-section">
     <div class="food-island-header">
       <div class="food-island-title">Oahu</div>
-      <span class="food-island-badge fib-oahu">9 spots</span>
+      <span class="food-island-badge fib-oahu">12 spots</span>
     </div>
     <div class="food-grid">
       <div class="food-card">
@@ -1092,6 +1251,12 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="fc-location">📍 933 Kapahulu Ave, Honolulu</div>
         <div class="fc-type fc-type-sweet">Sweet</div>
         <div class="fc-desc">Portuguese malasadas (donuts) made fresh since 1952. Sugar-dusted or cream-filled: guava, custard, coconut. Open 5:30 am–7 pm daily.</div>
+      </div>
+      <div class="food-card">
+        <div class="fc-header"><div class="fc-name">Ted's Bakery</div><span class="fc-must">★ Must</span></div>
+        <div class="fc-location">📍 59-024 Kamehameha Hwy, Sunset Beach</div>
+        <div class="fc-type fc-type-iconic">Iconic Local</div>
+        <div class="fc-desc">North Shore legend since 1987. Famous for cream pies, but the plate lunches are the real draw — garlic shrimp, chicken katsu, Hawaiian beef stew. Essential North Shore stop. tedsbakery.com/menu</div>
       </div>
       <div class="food-card">
         <div class="fc-header"><div class="fc-name">Faria</div><span class="fc-must">★ Must</span></div>
@@ -1128,6 +1293,18 @@ body { font-family: 'Outfit', sans-serif; background: var(--stone-pale); color: 
         <div class="fc-location">📍 North Shore roadside</div>
         <div class="fc-type fc-type-casual">Casual</div>
         <div class="fc-desc">Cult-favorite stand. Acai bowls, papaya bowls, coffee drinks. The quintessential North Shore breakfast with views to match.</div>
+      </div>
+      <div class="food-card">
+        <div class="fc-header"><div class="fc-name">MW Restaurant</div></div>
+        <div class="fc-location">📍 1538 Kapiolani Blvd, Honolulu</div>
+        <div class="fc-type fc-type-dining">Restaurant</div>
+        <div class="fc-desc">Pacific Rim cuisine — the mochi-crusted Kona Kanpachi is legendary. Sophisticated spot for a farewell group dinner. Reservations recommended.</div>
+      </div>
+      <div class="food-card">
+        <div class="fc-header"><div class="fc-name">Huggo's On the Rocks (Kailua Bay)</div></div>
+        <div class="fc-location">📍 Kailua Bay waterfront, Kona</div>
+        <div class="fc-type fc-type-casual">Casual</div>
+        <div class="fc-desc">Tables literally on lava rocks at the water's edge. Famous mai tais, sunset views, kalua pork nachos, live music. The ideal sunset drink stop on the Kona side.</div>
       </div>
     </div>
   </div>
@@ -1240,11 +1417,11 @@ function mapFilter(type) {
 
 const dayMeta = [
   {id:'day1', label:'Day 1 · Arrival', color:'#C8903E'},
-  {id:'day2', label:'Day 2 · SE Coast', color:'#0F6E56'},
-  {id:'day3', label:'Day 3 · Adventure', color:'#7A2E0E'},
-  {id:'day4', label:'Day 4 · North Shore', color:'#0F6E56'},
-  {id:'day5', label:'Day 5 · History', color:'#1A5F8A'},
-  {id:'day6', label:'Day 6 · Lanikai', color:'#0F6E56'},
+  {id:'day2', label:'Day 2 · Diamond Head', color:'#0F6E56'},
+  {id:'day3', label:'Day 3 · SE Coast', color:'#0F6E56'},
+  {id:'day4', label:'Day 4 · Adventure', color:'#7A2E0E'},
+  {id:'day5', label:'Day 5 · North Shore', color:'#0F6E56'},
+  {id:'day6', label:'Day 6 · History/Ko Olina', color:'#1A5F8A'},
   {id:'day7', label:'Day 7 · Arrive BI', color:'#7A2E0E'},
   {id:'day8', label:'Day 8 · Volcanoes', color:'#7A2E0E'},
   {id:'day9', label:'Day 9 · North BI', color:'#7A2E0E'},
@@ -1271,6 +1448,18 @@ document.querySelectorAll('.map-pin').forEach(pin => {
   });
   pin.addEventListener('mouseleave', function() {
     this.querySelector('circle').setAttribute('r', '9');
+  });
+});
+
+/* Expandable activity items */
+document.querySelectorAll('.act-item').forEach(function(item){
+  item.addEventListener('click',function(e){
+    if(e.target.closest('a')) return;
+    var panel = this.querySelector('.act-details-panel');
+    if(!panel) return;
+    var open = panel.classList.contains('open');
+    panel.classList.toggle('open',!open);
+    this.classList.toggle('expanded',!open);
   });
 });
 </script>
