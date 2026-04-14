@@ -1,0 +1,203 @@
+DESIGN SYSTEM PROMPT — Trip Briefing Document
+=============================================
+
+Create a self-contained single-page HTML trip briefing document using the design system described below. The document should be production-quality, visually refined, and fully functional with no external dependencies beyond Google Fonts and Leaflet.js.
+
+---
+
+TYPOGRAPHY
+----------
+- Headings and display text: Cormorant Garamond (serif) — weights 300, 400, 500; italic variants used for accent/em elements
+- Body, labels, UI: Jost (sans-serif) — weights 300, 400, 500
+- Load both from Google Fonts
+- Section labels: 11px, weight 500, letter-spacing 0.22em, ALL CAPS
+- Body text: 14px, line-height 1.75
+- Overview paragraph: Cormorant Garamond, clamp(20px, 2.2vw, 26px), weight 300, line-height 1.65
+- Day titles: Cormorant Garamond, clamp(28px, 4vw, 44px), weight 300
+- Hero h1: Cormorant Garamond, clamp(44px, 7vw, 88px), weight 300, line-height 0.92, letter-spacing -0.02em
+- Large decorative day number: Cormorant Garamond, 120px, weight 300, opacity 0.08 (purely decorative)
+
+---
+
+COLOR SYSTEM
+------------
+Define all colors as CSS custom properties on :root.
+
+Base palette (neutral warm parchment):
+  --page:     #F8F5F0   (main background)
+  --page2:    #EDE8E0   (secondary background, used in table headers, footer)
+  --page3:    #D4CEC4   (nav background, tertiary surfaces)
+  --ink:      #1C1810   (primary text)
+  --ink2:     #3A3028   (secondary text, body content)
+  --muted:    #706860   (labels, metadata, placeholders)
+  --rule:     rgba(58,48,40,0.12)  (all borders and dividers)
+
+Accent color — choose ONE primary accent color for the topic. Examples:
+  - Nature/jungle: --green: #1B5E38 (forest green)
+  - Ocean/coast:   --ocean: #1A4F72 (deep ocean blue)
+  - Desert:        --desert: #8A4A10 (warm terracotta)
+  Use this accent for: hero background, nav logo em, section labels, fact-key backgrounds, tip titles, checklist active states, footer text.
+
+Per-day color system — define 5 day colors (--d1 through --d5), each with:
+  - --dN: the main color (used for day number, day title, labels, stop toggle active state)
+  - --dNb: a very light tint of the color (used for hover states, note backgrounds, tip backgrounds)
+  - --dN-dark: a darker variant (available for further use)
+  Choose 5 visually distinct colors that feel cohesive for the topic. Example set:
+    --d1:#2E6840  green
+    --d2:#0D6875  teal
+    --d3:#B03820  terracotta
+    --d4:#2E5C8A  navy
+    --d5:#7A5A08  amber/gold
+
+---
+
+LAYOUT STRUCTURE
+----------------
+The page is divided into these top-level sections, in order:
+
+1. NAV — fixed top bar, 56px tall
+2. HERO — full-width colored section with centered text
+3. STATS BAR — 4-column grid of summary statistics
+4. OVERVIEW — narrative paragraph + quick facts table + interactive map
+5. ITINERARY — day-by-day chapters (one per day)
+6. PRACTICAL NOTES — tip card grid
+7. CHECKLIST — interactive pre-trip booking list
+8. FOOTER
+
+Max content width: 1100px (.section), 800px (.section-sm). Both centered with auto margins and 80px 40px padding.
+
+---
+
+COMPONENT SPECIFICATIONS
+------------------------
+
+NAV
+  - Fixed, z-index 100
+  - Background: rgba(212,206,196,0.98) with backdrop-filter: blur(12px)
+  - Left: brand name in Cormorant Garamond 17px — plain text + <em> in accent color (italic)
+  - Right: links to #overview, #itinerary, #notes, #checklist — 12px, weight 500, 0.1em spacing, ALL CAPS, color --muted, hover to --ink
+
+HERO
+  - Background: accent color (dark, saturated)
+  - Centered content, max-width 760px, padding 80px 40px 64px
+  - Elements (all with fade-in animation via @keyframes rise):
+      · Eyebrow: 11px, weight 500, 0.28em spacing, ALL CAPS, rgba(accent-light, 0.8)
+      · h1: large serif display in light cream (#F0F9F2 or similar), with <em> on second line in lighter accent tint
+      · Subheading: 15px weight 300, muted cream, key locations separated by ·
+      · Date pill: inline-flex, 0.5px border rgba(white,0.18), 40px border-radius, accent-light text, strong dates in cream
+
+STATS BAR
+  - 4-column CSS grid, border-bottom
+  - Each stat: padding 28px 20px, text-align center, border-right (last: none)
+  - stat-val: Cormorant Garamond 36px weight 300
+  - stat-lbl: 11px, 0.12em spacing, ALL CAPS, --muted
+  - stat-sub: 11px, accent color, weight 500 (optional supplementary label)
+
+OVERVIEW SECTION
+  Contains three sub-sections:
+  a) Overview text — single Cormorant Garamond paragraph, large, line-height 1.65
+  b) Quick Facts table — CSS grid: 160px + 1fr columns, bordered, rounded (10px)
+       · fact-key: 12px, 0.1em spacing, ALL CAPS, accent color, accent-light background
+       · fact-val: 14px, white background
+  c) Route Map — Leaflet.js interactive map (see MAP section below)
+
+DAY CHAPTERS
+  Each day is a .day-chapter with class .day-N (N = 1–5). All styling inherits from --dN.
+  Structure:
+    · Day header: 2-column grid (large decorative number | date label + title + hotel)
+    · Stop cards list (expandable)
+    · Food & drink list
+    · Driving table
+    · Optional: day note
+
+  STOP CARDS
+    - White background, 0.5px border, 10px radius on first/last
+    - 3-column header grid: 200px | 1fr | auto (name+meta | teaser | toggle button)
+    - Toggle button: 24px circle, rotates 45° when open, fills with --dN color
+    - Expanded body: stop-desc paragraph + optional stop-tip (left-border colored block)
+    - Hover state: background changes to --dNb
+
+  FOOD LIST
+    - Flat list of food-row items (white bg, 0.5px border, 10px radius on first/last)
+    - 3 elements per row: food-name (500 weight, min-width 180px) | food-type (pill badge, muted) | food-note (muted, 12px, flex:1)
+
+  DRIVING TABLE
+    - Full-width table, collapsed borders, 0.5px rule, 10px border-radius wrapper
+    - Header row: background #A8A098, 11px ALL CAPS labels
+    - Columns: Leg (leg-name, 13px) | Time (leg-time, bold) | Miles (leg-miles, muted 12px) | Note (leg-note, italic muted 12px)
+    - Total row: same header background, bold, top border 1.5px solid
+
+  DAY NOTE
+    - Left-border block: 2px solid --dN, background --dNb, 13px, 0 6px 6px 0 radius
+    - strong label: 10px ALL CAPS, --dN color, displayed as block above body text
+
+PRACTICAL NOTES
+  - auto-fill grid of tip cards, minmax(280px, 1fr), gap 14px
+  - Each tip card: white bg, 0.5px border, 10px radius, 22px padding
+  - Hover: translateY(-2px) + subtle box-shadow
+  - tip-title: 12px, weight 600, 0.1em spacing, ALL CAPS, accent color
+  - tip-body: 13px, --muted, line-height 1.7
+
+CHECKLIST
+  - Background: --page2, border-top
+  - max-width 680px centered checklist
+  - Each check-item: flex row, white bg, 0.5px border, cursor pointer
+  - check-box: 17px square, 4px radius, border 1.5px --rule, bg --page2
+  - checked state: checkbox fills accent color, shows white ✓, text gets line-through with muted color
+  - Implemented via onclick="toggleCheck(this)" — JS toggles .checked class
+
+FOOTER
+  - Background: --page2, border-top, centered text
+  - Title: Cormorant Garamond 22px weight 300, accent color — with <em> italic
+  - Subtitle: 12px, --muted, 0.1em spacing, key details separated by ·
+
+---
+
+MAP (Leaflet.js)
+----------------
+- Use Leaflet 1.9.4 (unpkg CDN)
+- Base tile: CartoDB light_all — https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png
+- attributionControl: false
+- Custom circular markers: 12px div icons with white 2.5px border and drop shadow, colored by day
+- Markers: one per stop, each colored with its day's --dN color
+- Popup: bold stop name + "Day N" in muted 11px
+- Polylines: dashed (dashArray: '6 4'), weight 3, opacity 0.85, one per day in its day color
+- Map legend below the map: flex row of colored dots + day labels
+- Map height: 500px
+
+JS pattern:
+  const DAY_COLORS = {1:'#color1', 2:'#color2', ... };
+  const mkIcon = c => L.divIcon({...12px circle div...});
+  Array of stops: {lat, lng, label, day} — forEach adds marker
+  Array of routes: {pts: [[lat,lng],...], day} — forEach adds polyline
+
+---
+
+ANIMATIONS
+----------
+- Hero elements: @keyframes rise (opacity 0→1, translateY 20px→0), staggered delays 0.1–0.45s
+- Scroll reveal: .reveal class starts at opacity:0, translateY:24px; IntersectionObserver adds .visible class (threshold 0.08) which transitions to opacity:1, translateY:0 over 0.7s ease
+
+---
+
+RESPONSIVE (mobile breakpoint: 768px)
+--------------------------------------
+- nav padding reduces to 0 20px
+- section padding reduces to 50px 20px
+- stats grid: 2 columns (2x2)
+- day-num-big: 72px
+- stop-header: 2 columns (1fr + auto), stop-teaser hidden
+- facts-grid: 120px + 1fr
+- leg-note column hidden
+
+---
+
+HOW TO APPLY THIS TO A NEW TOPIC
+----------------------------------
+1. Choose a primary accent color that fits the subject (one strong, saturated color)
+2. Choose 5 per-day colors — aim for variety: a green, a teal/blue, a warm tone, a navy, a gold
+3. Set the hero background to the primary accent color; derive light text from it
+4. Replace all content (stops, food, driving legs, notes, checklist items) with topic-specific entries
+5. Update the Leaflet map center coordinates and zoom to fit the geographic area
+6. Update stats bar with the relevant summary numbers for the topic
+7. The HTML/CSS structure stays identical — only colors and content change

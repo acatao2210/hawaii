@@ -36,9 +36,11 @@ body{font-family:'Jost',sans-serif;background:var(--page);color:var(--ink);min-h
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;background:rgba(212,206,196,0.98);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--rule)}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink);letter-spacing:0.04em}
 .nav-logo em{font-style:italic;color:var(--green)}
-.nav-links{display:flex;gap:28px}
+.nav-links{display:flex;align-items:center;gap:20px}
 .nav-links a{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
 .nav-links a:hover{color:var(--ink)}
+.nav-links a.active{color:var(--ink)}
+.nav-divider{width:0.5px;height:14px;background:var(--rule)}
 
 /* HERO */
 .hero{padding:80px 40px 64px;background:#1B5E38;border-bottom:0.5px solid rgba(0,0,0,0.1);text-align:center}
@@ -231,8 +233,12 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
 <body>
 
 <nav>
-  <div class="nav-logo">Big Island, <em>Hawaii</em></div>
+  <div class="nav-logo">Hawai'i <em>2026</em></div>
   <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="Oahu.html">O'ahu</a>
+    <a href="BigIsland.html" class="active">Big Island</a>
+    <div class="nav-divider"></div>
     <a href="#overview">Overview</a>
     <a href="#itinerary">Itinerary</a>
     <a href="#notes">Notes</a>
@@ -259,7 +265,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
 <div id="overview">
   <div class="section-sm reveal">
     <p class="section-label">Overview</p>
-    <p class="overview-text">This itinerary covers both the west (Kona) and east (Hilo) sides of the Big Island over five days. You arrive on the 23rd for a relaxed first evening in Kona. Day 2 takes you up the Kohala Coast for snorkeling and the coffee farm. Day 3 crosses to the east side via the north — Waipio Valley and Akaka Falls — before checking into Hilo. Day 4 is the big east-side day: Volcanoes in the morning and Mauna Kea in the evening. Day 5 loops around the southern tip — Green Sand Beach and Punalu'u — before driving up the west coast to Kona for the final night.</p>
+    <p class="overview-text">This itinerary covers both the west (Kona) and east (Hilo) sides of the Big Island over five days. You arrive on the 23rd for a relaxed first evening in Kona. Day 7 takes you up the Kohala Coast for snorkeling and the coffee farm. Day 8 crosses to the east side via the north — Waipio Valley and Akaka Falls — before checking into Hilo. Day 9 is the big east-side day: Volcanoes in the morning and Mauna Kea in the evening. Day 10 loops around the southern tip — Green Sand Beach and Punalu'u — before driving up the west coast to Kona for the final night.</p>
   </div>
   <div class="section reveal" style="padding-top:0">
     <p class="section-label">Quick Facts</p>
@@ -278,11 +284,11 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
     <div class="map-wrap">
       <div id="map"></div>
       <div class="map-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#2E6840"></div>Day 1 — Arrive Kona</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#0D6875"></div>Day 2 — Kohala Divers &amp; Coffee Farm</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#B03820"></div>Day 3 — North loop → Hilo</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#2E5C8A"></div>Day 4 — Volcanoes &amp; Mauna Kea</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#7A5A08"></div>Day 5 — South loop → Kona</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2E6840"></div>Day 6 — Arrive Kona</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#0D6875"></div>Day 7 — Kohala Divers &amp; Coffee Farm</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#B03820"></div>Day 8 — North loop → Hilo</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2E5C8A"></div>Day 9 — Volcanoes &amp; Mauna Kea</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#7A5A08"></div>Day 10 — South loop → Kona</div>
       </div>
     </div>
   </div>
@@ -295,7 +301,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
     <!-- DAY 1 -->
     <div class="day-chapter day-1 reveal">
       <div class="day-header">
-        <div class="day-num-big">1</div>
+        <div class="day-num-big">6</div>
         <div class="day-meta">
           <div class="day-date-label">Saturday, May 23</div>
           <div class="day-title">Arrive &amp; Settle, Kona</div>
@@ -347,7 +353,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
     <!-- DAY 2 -->
     <div class="day-chapter day-2 reveal">
       <div class="day-header">
-        <div class="day-num-big">2</div>
+        <div class="day-num-big">7</div>
         <div class="day-meta">
           <div class="day-date-label">Sunday, May 24</div>
           <div class="day-title">West Side — Snorkel &amp; Coffee Farm</div>
@@ -397,7 +403,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
     <!-- DAY 1 -->
     <div class="day-chapter day-3 reveal">
       <div class="day-header">
-        <div class="day-num-big">3</div>
+        <div class="day-num-big">8</div>
         <div class="day-meta">
           <div class="day-date-label">Monday, May 25</div>
           <div class="day-title">North Loop — Akaka Falls &amp; Waipio → Hilo</div>
@@ -447,7 +453,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
 
     <div class="day-chapter day-4 reveal">
       <div class="day-header">
-        <div class="day-num-big">4</div>
+        <div class="day-num-big">9</div>
         <div class="day-meta">
           <div class="day-date-label">Tuesday, May 26</div>
           <div class="day-title">Volcanoes &amp; Mauna Kea</div>
@@ -499,7 +505,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
 
     <div class="day-chapter day-5 reveal">
       <div class="day-header">
-        <div class="day-num-big">5</div>
+        <div class="day-num-big">10</div>
         <div class="day-meta">
           <div class="day-date-label">Wednesday, May 27</div>
           <div class="day-title">South Loop — Green Sand &amp; Black Sand</div>
@@ -572,7 +578,7 @@ footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;back
     <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Click each item to mark it complete.</p>
     <div class="checklist">
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Rental car — confirm Mauna Kea summit road policy with rental company</div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Kohala Divers — book morning snorkel/dive slot for May 24 (Day 2)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Kohala Divers — book morning snorkel/dive slot for May 24 (Day 7)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Accommodation — 2 nights Kona (May 23–24), 2 nights Hilo (May 25–26), 1 night Kona (May 27)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Hawaii Volcanoes NP — no reservation required, pay at gate ($30/vehicle)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Akaka Falls — $5/vehicle parking, no advance booking needed</div></div>
@@ -608,7 +614,7 @@ const mkIcon=c=>L.divIcon({className:'',html:`<div style="width:12px;height:12px
  {lat:19.823,lng:-155.4694,label:"Mauna Kea",day:4},
  {lat:20.0398,lng:-155.8305,label:"Kohala Divers",day:2},
 ].forEach(s=>L.marker([s.lat,s.lng],{icon:mkIcon(DAY_COLORS[s.day])}).addTo(map)
-  .bindPopup(`<strong style="color:#1C1208">${s.label}</strong><br><span style="font-size:11px;color:#8A7860">Day ${s.day}</span>`));
+  .bindPopup(`<strong style="color:#1C1208">${s.label}</strong><br><span style="font-size:11px;color:#8A7860">Day ${s.day + 5}</span>`));
 
 [{pts:[[19.7074,-156.045],[19.6400,-155.9960],[19.5757,-155.9742]],day:1},
  {pts:[[19.6400,-155.9960],[19.7500,-155.9800],[19.8700,-155.8800],[20.0100,-155.8200],[20.0398,-155.8305],[19.9000,-155.8500],[19.7800,-155.9300],[19.5562,-155.9298],[19.6400,-155.9960]],day:2},

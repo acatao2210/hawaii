@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O'ahu, Hawaii — Trip Briefing — May 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --page:#F8F5F0;
+  --page2:#EDE8E0;
+  --page3:#D4CEC4;
+  --ink:#1C1810;
+  --ink2:#3A3028;
+  --muted:#706860;
+  --rule:rgba(58,48,40,0.12);
+  --accent:#1A4F72;
+  --accent-light:#EEF4F8;
+  --accent-mid:#22618A;
+  --fern:#1A4F72;
+  --d1:#2566A8; --d1b:#EDF4FB; --d1-dark:#163E6E;
+  --d2:#1A7A5A; --d2b:#EBF8F3; --d2-dark:#0F4A36;
+  --d3:#B05C10; --d3b:#FDF4EB; --d3-dark:#6E3A08;
+  --d4:#2E3F8A; --d4b:#EEF0FB; --d4-dark:#1A2556;
+  --d5:#7A5A08; --d5b:#FEFAF0; --d5-dark:#4A3604;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--page);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;background:rgba(212,206,196,0.98);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--rule)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink);letter-spacing:0.04em}
+.nav-logo em{font-style:italic;color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.active{color:var(--ink)}
+.nav-divider{width:0.5px;height:14px;background:var(--rule)}
+
+/* HERO */
+.hero{padding:80px 40px 64px;background:#1A4F72;border-bottom:0.5px solid rgba(0,0,0,0.1);text-align:center}
+.hero-content{max-width:760px;margin:0 auto}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:rgba(160,210,240,0.85);margin-bottom:20px;opacity:0;animation:rise 0.7s ease 0.1s forwards}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,88px);font-weight:300;line-height:0.92;color:#EDF6FF;letter-spacing:-0.02em;opacity:0;animation:rise 0.8s ease 0.2s forwards}
+.hero h1 em{font-style:italic;color:#9DCFED;display:block}
+.hero-sub{font-size:15px;font-weight:300;color:rgba(180,220,245,0.65);margin-top:20px;letter-spacing:0.05em;opacity:0;animation:rise 0.7s ease 0.35s forwards}
+.hero-dates{display:inline-flex;align-items:center;gap:14px;margin-top:24px;padding:10px 24px;border:0.5px solid rgba(255,255,255,0.18);border-radius:40px;font-size:13px;color:rgba(180,220,245,0.65);letter-spacing:0.06em;opacity:0;animation:rise 0.7s ease 0.45s forwards}
+.hero-dates strong{color:#EDF6FF;font-weight:500}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--page);border-bottom:1px solid var(--rule)}
+.stat{padding:28px 20px;text-align:center;border-right:0.5px solid var(--rule)}
+.stat:last-child{border-right:none}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--ink)}
+.stat-lbl{font-size:11px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.stat-sub{font-size:11px;color:var(--accent);margin-top:4px;font-weight:500}
+
+/* SECTIONS */
+.section{max-width:1100px;margin:0 auto;padding:80px 40px}
+.section-sm{max-width:800px;margin:0 auto;padding:80px 40px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:40px;display:flex;align-items:center;gap:16px}
+.section-label::after{content:'';flex:1;height:0.5px;background:var(--rule)}
+
+/* OVERVIEW */
+.overview-text{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.2vw,26px);font-weight:300;line-height:1.65;color:var(--ink2)}
+
+/* QUICK FACTS */
+.facts-grid{display:grid;grid-template-columns:160px 1fr;border:0.5px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.fact-key{padding:14px 20px;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);border-bottom:0.5px solid var(--rule);display:flex;align-items:center}
+.fact-val{padding:14px 20px;font-size:14px;color:var(--ink2);background:#fff;border-bottom:0.5px solid var(--rule);display:flex;align-items:center}
+.fact-key:last-of-type,.fact-val:last-of-type{border-bottom:none}
+
+/* MAP */
+.map-wrap{border-radius:var(--r);overflow:hidden;border:0.5px solid var(--rule);box-shadow:0 2px 16px rgba(0,0,0,0.06)}
+#map{width:100%;height:500px}
+.map-legend{display:flex;flex-wrap:wrap;gap:20px;padding:14px 20px;background:var(--page2);border-top:0.5px solid var(--rule)}
+.leg-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* DAY CHAPTERS */
+.days-wrapper{display:flex;flex-direction:column}
+.day-chapter{border-top:0.5px solid var(--rule);padding:64px 0}
+.day-header{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:24px;margin-bottom:44px}
+.day-num-big{font-family:'Cormorant Garamond',serif;font-size:120px;font-weight:300;line-height:0.85;letter-spacing:-0.04em;opacity:0.08;user-select:none;margin-top:-8px}
+.day-date-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.day-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:300;line-height:1.1}
+.day-hotel{margin-top:12px;display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:0.06em}
+.day-hotel::before{content:'';width:20px;height:0.5px}
+
+.day-1 .day-num-big,.day-1 .day-title{color:var(--d1)}
+.day-2 .day-num-big,.day-2 .day-title{color:var(--d2)}
+.day-3 .day-num-big,.day-3 .day-title{color:var(--d3)}
+.day-4 .day-num-big,.day-4 .day-title{color:var(--d4)}
+.day-5 .day-num-big,.day-5 .day-title{color:var(--d5)}
+.day-1 .day-hotel{color:var(--d1)}.day-1 .day-hotel::before{background:var(--d1)}
+.day-2 .day-hotel{color:var(--d2)}.day-2 .day-hotel::before{background:var(--d2)}
+.day-3 .day-hotel{color:var(--d3)}.day-3 .day-hotel::before{background:var(--d3)}
+.day-4 .day-hotel{color:var(--d4)}.day-4 .day-hotel::before{background:var(--d4)}
+.day-5 .day-hotel{color:var(--d5)}.day-5 .day-hotel::before{background:var(--d5)}
+
+/* STOPS */
+.stops-label,.driving-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:block}
+.day-1 .stops-label,.day-1 .driving-label{color:var(--d1)}
+.day-2 .stops-label,.day-2 .driving-label{color:var(--d2)}
+.day-3 .stops-label,.day-3 .driving-label{color:var(--d3)}
+.day-4 .stops-label,.day-4 .driving-label{color:var(--d4)}
+.day-5 .stops-label,.day-5 .driving-label{color:var(--d5)}
+
+.stops-list{display:flex;flex-direction:column;gap:1px;margin-bottom:40px}
+.stop-card{background:#fff;border:0.5px solid var(--rule);overflow:hidden;cursor:pointer;transition:background 0.15s}
+.stop-card:first-child{border-radius:var(--r) var(--r) 0 0}
+.stop-card:last-child{border-radius:0 0 var(--r) var(--r)}
+.stop-card:only-child{border-radius:var(--r)}
+.stop-card:hover{background:var(--page2)}
+.stop-header{display:grid;grid-template-columns:200px 1fr auto;align-items:center;gap:22px;padding:16px 20px}
+.stop-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--ink);line-height:1.2}
+.stop-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.stop-teaser{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.stop-toggle{width:24px;height:24px;border-radius:50%;border:0.5px solid var(--rule);background:var(--page);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;color:var(--muted);font-size:14px}
+.stop-card.open .stop-toggle{transform:rotate(45deg)}
+.day-1 .stop-card.open .stop-toggle{background:var(--d1);border-color:var(--d1);color:#fff}
+.day-2 .stop-card.open .stop-toggle{background:var(--d2);border-color:var(--d2);color:#fff}
+.day-3 .stop-card.open .stop-toggle{background:var(--d3);border-color:var(--d3);color:#fff}
+.day-4 .stop-card.open .stop-toggle{background:var(--d4);border-color:var(--d4);color:#fff}
+.day-5 .stop-card.open .stop-toggle{background:var(--d5);border-color:var(--d5);color:#fff}
+.day-1 .stop-card:hover{background:var(--d1b)}
+.day-2 .stop-card:hover{background:var(--d2b)}
+.day-3 .stop-card:hover{background:var(--d3b)}
+.day-4 .stop-card:hover{background:var(--d4b)}
+.day-5 .stop-card:hover{background:var(--d5b)}
+
+.stop-body{display:none;padding:0 20px 18px;border-top:0.5px solid var(--rule)}
+.stop-card.open .stop-body{display:block}
+.stop-desc{font-size:14px;color:var(--ink2);line-height:1.75;padding-top:16px}
+.stop-tip{margin-top:12px;padding:11px 15px;border-radius:0 6px 6px 0;border-left:2px solid;font-size:13px;color:var(--ink2);line-height:1.6}
+.day-1 .stop-tip{background:var(--d1b);border-color:var(--d1)}
+.day-2 .stop-tip{background:var(--d2b);border-color:var(--d2)}
+.day-3 .stop-tip{background:var(--d3b);border-color:var(--d3)}
+.day-4 .stop-tip{background:var(--d4b);border-color:var(--d4)}
+.day-5 .stop-tip{background:var(--d5b);border-color:var(--d5)}
+.stop-tip strong{display:block;margin-bottom:2px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+.day-1 .stop-tip strong{color:var(--d1)}.day-2 .stop-tip strong{color:var(--d2)}
+.day-3 .stop-tip strong{color:var(--d3)}.day-4 .stop-tip strong{color:var(--d4)}
+.day-5 .stop-tip strong{color:var(--d5)}
+
+/* FOOD */
+.food-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:block;margin-top:40px}
+.day-1 .food-label{color:var(--d1)}.day-2 .food-label{color:var(--d2)}.day-3 .food-label{color:var(--d3)}.day-4 .food-label{color:var(--d4)}.day-5 .food-label{color:var(--d5)}
+.food-list{display:flex;flex-direction:column;gap:1px;margin-bottom:40px}
+.food-row{display:flex;align-items:center;gap:14px;padding:11px 16px;background:#fff;border:0.5px solid var(--rule);font-size:13px}
+.food-row:first-child{border-radius:var(--r) var(--r) 0 0}
+.food-row:last-child{border-radius:0 0 var(--r) var(--r)}
+.food-row:only-child{border-radius:var(--r)}
+.food-name{font-weight:500;color:var(--ink);min-width:180px;flex-shrink:0}
+.food-type{font-size:11px;color:var(--muted);border:0.5px solid var(--rule);border-radius:20px;padding:2px 8px;white-space:nowrap;flex-shrink:0}
+.food-note{color:var(--muted);flex:1;font-size:12px}
+
+/* DRIVE TABLE */
+.drive-table-wrap{border:0.5px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.drive-table{width:100%;border-collapse:collapse;font-size:14px}
+.drive-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border-bottom:0.5px solid var(--rule);color:var(--ink);background:#A8A098}
+.drive-table td{padding:11px 14px;border-bottom:0.5px solid var(--rule);vertical-align:middle;background:#fff}
+.drive-table tr:last-child td{border-bottom:none}
+.leg-name{color:var(--ink2);font-size:13px}
+.leg-time{color:var(--ink);font-weight:500;white-space:nowrap}
+.leg-miles{color:var(--muted);font-size:12px}
+.leg-note{color:var(--muted);font-size:12px;font-style:italic}
+.total-row td{font-weight:600;font-size:13px;border-top:1.5px solid #8A8478;border-bottom:none!important;background:#A8A098!important;color:var(--ink)}
+
+/* DAY NOTE */
+.day-note{margin-top:14px;padding:12px 15px;border-radius:0 6px 6px 0;border-left:2px solid;font-size:13px;color:var(--ink2);line-height:1.6}
+.day-1 .day-note{background:var(--d1b);border-color:var(--d1)}
+.day-2 .day-note{background:var(--d2b);border-color:var(--d2)}
+.day-3 .day-note{background:var(--d3b);border-color:var(--d3)}
+.day-4 .day-note{background:var(--d4b);border-color:var(--d4)}
+.day-5 .day-note{background:var(--d5b);border-color:var(--d5)}
+.day-note strong{display:block;margin-bottom:2px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+.day-1 .day-note strong{color:var(--d1)}.day-2 .day-note strong{color:var(--d2)}
+.day-3 .day-note strong{color:var(--d3)}.day-4 .day-note strong{color:var(--d4)}
+.day-5 .day-note strong{color:var(--d5)}
+
+/* PRACTICAL NOTES */
+#notes{background:var(--page);border-top:1px solid var(--rule)}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tip-card{background:#fff;border:0.5px solid var(--rule);border-radius:var(--r);padding:22px;transition:box-shadow 0.2s,transform 0.2s}
+.tip-card:hover{box-shadow:0 2px 12px rgba(26,79,114,0.1);transform:translateY(-2px)}
+.tip-title{font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.tip-body{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* CHECKLIST */
+#checklist{background:var(--page2);border-top:1px solid var(--rule)}
+.checklist{display:flex;flex-direction:column;gap:2px;max-width:680px}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:#fff;border:0.5px solid var(--rule);cursor:pointer;transition:background 0.15s;user-select:none}
+.check-item:first-child{border-radius:var(--r) var(--r) 0 0}
+.check-item:last-child{border-radius:0 0 var(--r) var(--r)}
+.check-item:hover{background:var(--accent-light)}
+.check-box{width:17px;height:17px;border-radius:4px;flex-shrink:0;margin-top:1px;border:1.5px solid var(--rule);background:var(--page2);display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.check-item.checked .check-box{background:var(--fern);border-color:var(--fern)}
+.check-item.checked .check-box::after{content:'✓';font-size:10px;color:#fff;font-weight:700}
+.check-item.checked .check-text{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(138,120,96,0.4)}
+.check-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+
+/* FOOTER */
+footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;background:var(--page2)}
+.footer-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--accent);margin-bottom:6px}
+.footer-sub{font-size:12px;color:var(--muted);letter-spacing:0.1em}
+
+/* ANIMATIONS */
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  nav{padding:0 20px}.nav-links{gap:14px}
+  .section,.section-sm{padding:50px 20px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(n+3){border-top:0.5px solid var(--rule)}
+  .day-header{gap:14px}.day-num-big{font-size:72px}
+  .stop-header{grid-template-columns:1fr auto;gap:10px}.stop-teaser{display:none}
+  .facts-grid{grid-template-columns:120px 1fr}.leg-note{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Hawai'i <em>2026</em></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="Oahu.html" class="active">O'ahu</a>
+    <a href="BigIsland.html">Big Island</a>
+    <div class="nav-divider"></div>
+    <a href="#overview">Overview</a>
+    <a href="#itinerary">Itinerary</a>
+    <a href="#notes">Notes</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Trip Briefing · May 2026</p>
+    <h1>O'ahu<br><em>Hawaii</em></h1>
+    <p class="hero-sub">Waikiki &nbsp;·&nbsp; Southeast Coast &nbsp;·&nbsp; Windward &nbsp;·&nbsp; North Shore</p>
+    <div class="hero-dates"><strong>May 18</strong> &nbsp;–&nbsp; arrive 1:42 pm &nbsp;–&nbsp; <strong>May 22</strong> last full day</div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Days</div><div class="stat-sub">May 18–22</div></div>
+  <div class="stat"><div class="stat-val">~180 mi</div><div class="stat-lbl">Total driving</div></div>
+  <div class="stat"><div class="stat-val">16+</div><div class="stat-lbl">Stops</div><div class="stat-sub">Hikes · Beaches · Culture</div></div>
+  <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Nights</div><div class="stat-sub">Waikiki / Kailua area</div></div>
+</div>
+
+<div id="overview">
+  <div class="section-sm reveal">
+    <p class="section-label">Overview</p>
+    <p class="overview-text">Five days covering O'ahu's three distinct personalities. You land Monday afternoon and ease into Waikiki. Day 2 tackles the classic Honolulu circuit — Diamond Head at sunrise, the Bishop Museum, and Manoa Valley. Day 3 crosses to the windward coast for Makapu'u, Hanauma Bay snorkeling, and a kayak to the Mokulua Islands. Day 4 pushes inland through Ko'olau country — Koko Head stairs, Kualoa Ranch, the Byodo-In Temple, and the Pali Lookout. Day 5 ends the O'ahu chapter on the legendary North Shore: pillbox hike, Waimea Valley waterfall, shave ice in Haleiwa, and Friday night fireworks back in Waikiki.</p>
+  </div>
+
+  <div class="section reveal" style="padding-top:0">
+    <p class="section-label">Quick Facts</p>
+    <div class="facts-grid" style="max-width:680px">
+      <div class="fact-key">Arrival</div><div class="fact-val">Monday, May 18, 2026 — 1:42 pm, Honolulu International Airport (HNL) · UA 219 from ORD</div>
+      <div class="fact-key">Departure</div><div class="fact-val">Saturday, May 23 — fly HNL → KOA (Kona, Big Island) after morning Pearl Harbor visit</div>
+      <div class="fact-key">Hotel</div><div class="fact-val">Waikiki / Kailua area — 5 nights, May 18–22</div>
+      <div class="fact-key">Transport</div><div class="fact-val">Rental car — pick up at HNL on arrival; required from Day 2 onward</div>
+      <div class="fact-key">Season</div><div class="fact-val">Late May — warm (~82°F), trade winds active; North Shore calm (big swells are winter)</div>
+      <div class="fact-key">Sunscreen</div><div class="fact-val">Reef-safe only by Hawaii law — zinc oxide or titanium dioxide. Hanauma Bay bans non-mineral entirely</div>
+    </div>
+  </div>
+
+  <div class="section reveal" style="padding-top:0">
+    <p class="section-label">Route Map</p>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#2566A8"></div>Day 1 — Arrive HNL, Waikiki</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1A7A5A"></div>Day 2 — Diamond Head, Bishop Museum &amp; Manoa</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#B05C10"></div>Day 3 — Southeast Coast, Hanauma Bay &amp; Kailua</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2E3F8A"></div>Day 4 — Koko Head, Kualoa Ranch &amp; Pali</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#7A5A08"></div>Day 5 — North Shore</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="itinerary" class="section">
+  <p class="section-label">Day-by-Day Itinerary</p>
+  <div class="days-wrapper">
+
+    <!-- DAY 1 -->
+    <div class="day-chapter day-1 reveal">
+      <div class="day-header">
+        <div class="day-num-big">1</div>
+        <div class="day-meta">
+          <div class="day-date-label">Monday, May 18</div>
+          <div class="day-title">Arrival — First Taste</div>
+          <div class="day-hotel">Waikiki / Kailua — Night 1</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Arrive HNL &amp; Pick Up Car</div><div class="stop-meta">1:42 pm · UA 219 from ORD · CONRAC rental facility</div></div>
+            <div class="stop-teaser">Land, collect bags, pick up the rental car and drive to the hotel. About 20 minutes to Waikiki without traffic — allow 35 in the afternoon.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Rental car counters are in the consolidated facility (CONRAC) — follow signs after baggage claim. The shuttle to CONRAC runs every few minutes. The H-1 freeway gets you to Waikiki in 20 minutes under normal conditions; afternoon traffic can push this to 35–40 minutes. Hotel parking in Waikiki typically runs $35–55/night valet or $25–40 self-park. Cheaper garages can be found one block inland on Ala Wai Boulevard.</p>
+            <div class="stop-tip"><strong>Tip</strong>Pre-book your rental and use a card with CDW (collision damage waiver) coverage — saves significantly at the counter. Don't nap when you arrive: push through to local bedtime to beat jet lag.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Waikiki Beach Walk</div><div class="stop-meta">Kalakaua Ave · Walk from hotel · Free</div></div>
+            <div class="stop-teaser">The iconic strip — Duke Kahanamoku statue, gentle waves, Diamond Head on the horizon. The perfect first-evening orientation.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">After dropping bags, walk Kalakaua Avenue along the beach. The Duke Kahanamoku statue (the father of modern surfing) sits at the center of the strip and is the traditional first photo stop. Diamond Head looms at the east end — the same crater you'll hike tomorrow morning at 6:30am. The beach is walkable from any Waikiki hotel and the late-afternoon light is ideal. Waikiki's beach is about 2 miles long with consistently warm, gentle surf suitable for swimming.</p>
+            <div class="stop-tip"><strong>Tip</strong>The stretch in front of the Moana Surfrider and Royal Hawaiian hotels has the best sand and the classic O'ahu beach view. Grab a drink at one of the open-air beach bars and watch the sunset over Diamond Head.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Leonard's Bakery</div><div class="stop-meta">933 Kapahulu Ave · Open daily 5:30am–9pm · ~$2–4 each</div></div>
+            <div class="stop-teaser">The original Honolulu malasada — Portuguese fried dough dusted in sugar, a Hawaii institution since 1952. The required first-night dessert.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Leonard's has been the Honolulu malasada standard since 1952. The plain sugar version is the classic — crispy outside, pillowy inside. They also do malasada puffs filled with custard, guava, or haupia (coconut). It's a 10-minute drive from central Waikiki on Kapahulu Avenue. There's usually a short queue that moves fast. Get them fresh and hot straight from the fryer.</p>
+            <div class="stop-tip"><strong>Tip</strong>The plain sugar malasadas are best eaten immediately. If taking some back to the hotel, the filled puffs hold better. They can sell out late in the evening — don't leave it until after 8pm.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span>
+      <div class="food-list">
+        <div class="food-row"><span class="food-name">Rainbow Drive-In</span><span class="food-type">Hawaiian / Plate Lunch</span><span class="food-note">3308 Kanaina Ave · Daily 7am–9pm · ~$10–16 · Loco moco, mixed plate, teriyaki beef — O'ahu icon since 1961</span></div>
+        <div class="food-row"><span class="food-name">Helena's Hawaiian Food</span><span class="food-type">Hawaiian / Local</span><span class="food-note">1240 N School St · Tue–Fri 10am–7:30pm ONLY · James Beard Award winner · kalua pig, pipikaula short ribs</span></div>
+        <div class="food-row"><span class="food-name">Leonard's Bakery</span><span class="food-type">Bakery / Dessert</span><span class="food-note">933 Kapahulu Ave · Daily 5:30am–9pm · Malasadas plain or filled · the definitive first-night O'ahu snack</span></div>
+        <div class="food-row"><span class="food-name">Marukame Udon</span><span class="food-type">Japanese / Udon</span><span class="food-note">Waikiki strip · Daily · Fresh-made udon, under $10 a bowl · quick and satisfying after a long travel day</span></div>
+      </div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">HNL Airport → Waikiki hotel</td><td class="leg-time">20–35 min</td><td class="leg-miles">~9 mi</td><td class="leg-note">Allow extra for afternoon traffic on H-1</td></tr>
+            <tr><td class="leg-name">Hotel → Leonard's Bakery</td><td class="leg-time">10 min</td><td class="leg-miles">~1.5 mi</td><td class="leg-note">Easy evening errand</td></tr>
+            <tr class="total-row"><td>Total</td><td>~45 min</td><td>~11 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>Gentle arrival day — no early start, no big drives. Set an alarm: tomorrow begins at 6:15am for Diamond Head. Push through jet lag tonight and sleep at a local hour.</div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-chapter day-2 reveal">
+      <div class="day-header">
+        <div class="day-num-big">2</div>
+        <div class="day-meta">
+          <div class="day-date-label">Tuesday, May 19</div>
+          <div class="day-title">Diamond Head, Bishop Museum &amp; Manoa</div>
+          <div class="day-hotel">Waikiki / Kailua — Night 2</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Diamond Head State Monument</div><div class="stop-meta">6:30 am · $5/person + $10 parking · Book at hawaiistateparks.org</div></div>
+            <div class="stop-teaser">The classic O'ahu summit — 1.6 miles round trip up a volcanic tuff cone with sweeping views over Waikiki at sunrise. Book well in advance.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Le'ahi (Diamond Head) is the most recognizable natural landmark in Hawaii. The 1.6-mile round trip gains 560 feet through a mix of paved path, steep staircases, a spiral staircase inside an old fire control station, and a short lighted tunnel through the crater wall. The summit lookout delivers a 360-degree view: Waikiki below, the Ko'olau Mountains inland, and open Pacific in every direction. A 6:30am entry puts you at the top near sunrise before the heat and crowds arrive — by 9am both the parking lot and trail are packed.</p>
+            <div class="stop-tip"><strong>Tip</strong>Reservations are mandatory for non-residents: hawaiistateparks.org. The parking lot is small and time-slotted — book the first available slot. No water on trail; bring at least 1 liter. Closed-toe shoes recommended for the stairs.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Bishop Museum</div><div class="stop-meta">9:30 am · 1525 Bernice St · $38.95/adult · Open 9am–5pm</div></div>
+            <div class="stop-teaser">The Smithsonian of Hawaii — 23 million artifacts spanning Hawaiian history, Polynesian culture, and Pacific natural science. Allow 2–3 hours.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Founded in 1889 and holding the world's largest collection of Hawaiian cultural artifacts, the Bishop Museum is an essential stop for understanding what you're seeing across the islands. The centerpiece Hawaiian Hall has three stories of balconies lined with royal feather capes, koa wood canoes, navigation tools, and ancient ceremonial objects — with a sperm whale skeleton suspended from the ceiling. The Science Adventure Center has a live volcano simulation worth seeing. Allow 2 to 2.5 hours for a thorough visit.</p>
+            <div class="stop-tip"><strong>Tip</strong>No reservation required, but school groups arrive on weekday mornings — 9:30am entry gets ahead of them. The $38.95 admission is genuinely worthwhile. The gift shop carries excellent books on Hawaiian history and hand-crafted local items.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Lyon Arboretum</div><div class="stop-meta">1:00 pm · 3860 Manoa Rd · Free · Mon–Fri 9am–3pm only</div></div>
+            <div class="stop-teaser">A 200-acre University of Hawaii tropical botanical garden tucked into Manoa Valley — cool, lush, and completely different from Waikiki just 15 minutes away.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">The Harold L. Lyon Arboretum is a University of Hawaii research garden covering 194 acres of native and tropical plants — heliconias, orchids, gingers, native Hawaiian ethnobotanical collections, and a dense forest of palms and tree ferns. The valley receives significantly more rainfall than Waikiki and feels like a different climate entirely. Trails wind through several themed garden areas at a leisurely pace. Free to visit; RSVP online recommended (lyonarboretum.manoa.hawaii.edu).</p>
+            <div class="stop-tip"><strong>Tip</strong>Mon–Fri only; closed weekends and state holidays. Bring bug spray — the lush environment means mosquitoes. The arboretum connects to the Manoa Falls trailhead just up the road.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Manoa Falls Trail</div><div class="stop-meta">3:30 pm · $5 parking · 1.6 mi round trip · Closed Mondays</div></div>
+            <div class="stop-teaser">An easy 1.6-mile round trip through dense rainforest to a 150-foot waterfall — just 15 minutes from Waikiki but feels like a different island entirely.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">The Manoa Falls Trail follows Manoa Stream through a lush jungle of banyan trees, bamboo, and enormous tree ferns to a 150-foot waterfall plunging into a pool at the valley head. The trail is well-maintained and easy to follow; the main challenge is mud — the valley is one of the wettest spots on O'ahu and the trail surface stays damp year-round. The forest canopy is dense and the setting genuinely dramatic, used as a filming location for Jurassic Park and The Hunger Games: Catching Fire.</p>
+            <div class="stop-tip"><strong>Tip</strong>Waterproof closed-toe shoes are essential — sandals are a bad idea. Swimming at the falls is not allowed (leptospirosis risk from stream water). The trail is closed Mondays. $5 parking at the trailhead lot; free street parking a few blocks down.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span>
+      <div class="food-list">
+        <div class="food-row"><span class="food-name">Café Kaila</span><span class="food-type">Brunch / American</span><span class="food-note">Market City Shopping Center · Post-hike brunch — stuffed French toast, mac nut pancakes. Honolulu brunch institution</span></div>
+        <div class="food-row"><span class="food-name">Highway Inn</span><span class="food-type">Hawaiian / Plate Lunch</span><span class="food-note">680 Iwilei Rd, Chinatown · Mon–Sat 9am–8pm · Kalua pig, lau lau, poi, mochiko chicken · authentic plate lunch</span></div>
+        <div class="food-row"><span class="food-name">Kapa Hale</span><span class="food-type">New Hawaiian</span><span class="food-note">50 N Hotel St, Chinatown · Chef Keaka Lee's elevated local cooking · reservations recommended for dinner</span></div>
+        <div class="food-row"><span class="food-name">Livestock Tavern</span><span class="food-type">New American / Bar</span><span class="food-note">Chinatown · Best cocktail program in Honolulu · smash burgers, seasonal plates · good for an evening drink</span></div>
+      </div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Waikiki → Diamond Head parking</td><td class="leg-time">10 min</td><td class="leg-miles">~2 mi</td><td class="leg-note">Leave by 6:15am for 6:30am entry</td></tr>
+            <tr><td class="leg-name">Diamond Head → Bishop Museum</td><td class="leg-time">15 min</td><td class="leg-miles">~5 mi</td><td class="leg-note">Post-hike breakfast first if needed</td></tr>
+            <tr><td class="leg-name">Bishop Museum → Lyon Arboretum</td><td class="leg-time">15 min</td><td class="leg-miles">~5 mi</td><td class="leg-note">Up Manoa Road</td></tr>
+            <tr><td class="leg-name">Manoa → Chinatown / Waikiki</td><td class="leg-time">15 min</td><td class="leg-miles">~4 mi</td><td class="leg-note">Dinner and evening</td></tr>
+            <tr class="total-row"><td>Total</td><td>~55 min</td><td>~16 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>A full day front-loaded with the early hike. The afternoon arboretum and falls are cool and shaded — a good counterbalance to the exposed Diamond Head climb. Chinatown is O'ahu's most interesting dining neighborhood and worth a wander even if you eat elsewhere.</div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-chapter day-3 reveal">
+      <div class="day-header">
+        <div class="day-num-big">3</div>
+        <div class="day-meta">
+          <div class="day-date-label">Wednesday, May 20</div>
+          <div class="day-title">Southeast Coast — Hanauma Bay &amp; Kailua</div>
+          <div class="day-hotel">Waikiki / Kailua — Night 3</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Makapu'u Lighthouse Trail</div><div class="stop-meta">7:00 am · Free · 2 mi paved round trip · Open 7am–7:45pm</div></div>
+            <div class="stop-teaser">A paved 2-mile round trip to O'ahu's easternmost point — sweeping views of the windward coast, Rabbit Island offshore, and the Ko'olau Range. No reservation needed.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">The Makapu'u Lighthouse Trail follows a paved service road up the sea cliffs at O'ahu's eastern tip, offering panoramic views at every turn of the route. The windward coastline of O'ahu unrolls to the north from the top: Kailua Bay, the Mokulua Islands, and the unbroken Ko'olau ridgeline. The historic red-and-white lighthouse sits below the trail on the point. A side trail descends to tidepools and the base of the cliff. The trail is fully accessible and stroller-friendly with no technical sections.</p>
+            <div class="stop-tip"><strong>Tip</strong>Arrive by 7am — the parking lot fills by 8am on weekdays and earlier on weekends. No shade on the trail: bring water and sunscreen. Morning light is ideal on the east-facing cliffs.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Waiāhole Beach Park</div><div class="stop-meta">~9:30 am · Kamehameha Hwy · Free · Quick stop</div></div>
+            <div class="stop-teaser">A hidden windward coast gem — black volcanic sand tucked against lush mountains, almost no crowds. Worth a 20-minute stop between Makapu'u and Hanauma Bay.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Waiāhole Beach Park sits on the windward coast just north of the junction back toward Hanauma Bay. The dark volcanic sand against turquoise water and the lush mountain wall behind it is a stark visual contrast to Waikiki's white sand. The beach is quiet, local, and has no facilities — bring water and snacks. It's a 20-minute stop maximum but it's the kind of O'ahu moment most visitors never see.</p>
+            <div class="stop-tip"><strong>Tip</strong>Free roadside parking along Kamehameha Hwy. No restrooms. The water can have a strong current here — better for looking than swimming. The scenery is the point.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Hanauma Bay Nature Preserve</div><div class="stop-meta">11:00 am · $25/person · Wed–Sun only · Book 2 days ahead at 7am exactly</div></div>
+            <div class="stop-teaser">O'ahu's premier snorkeling site — a protected marine sanctuary inside a volcanic crater with calm water, abundant reef fish, and green sea turtles.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Hanauma Bay is a 300,000-year-old collapsed volcanic crater open to the ocean, now one of Hawaii's most protected marine sanctuaries. The sheltered shape creates exceptionally calm, clear water with a fringing reef starting just 15–20 feet from shore. Marine life is abundant: humuhumunukunukuapua'a (the state fish), parrotfish, butterflyfish, moray eels, and Hawaiian green sea turtles are all regular sightings. All visitors must watch a mandatory 9-minute educational video before entering the water. Snorkel gear is available on site (~$25 rental). The bay closes Mondays and Tuesdays.</p>
+            <div class="stop-tip"><strong>Tip</strong>Reservations open at exactly 7:00am, two days in advance at hanaumabaystatepark.org — slots sell out within minutes. Set a phone alarm for May 18 at 7:00am HST to book for May 20. Non-mineral sunscreen (oxybenzone, octinoxate) is banned — wear a rash guard or use zinc oxide. Arrive at your booked time slot.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kailua Beach + Mokulua Islands Kayak</div><div class="stop-meta">3:00 pm · Beach free · Kayak $30–50/hr · Twogood Kayaks</div></div>
+            <div class="stop-teaser">O'ahu's most beautiful beach — powdery white sand and turquoise water — with an optional kayak to the twin Moke Islands offshore. One of the best afternoons on the island.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Kailua Beach is consistently ranked among the best beaches in the United States — 2.5 miles of fine white sand, shallow turquoise water warmed by the trade winds, and the dramatic Ko'olau Mountains as a backdrop. About a mile offshore, the twin Mokulua Islands (the "Mokes") are a seabird sanctuary accessible by kayak. Kayaking out takes 20–30 minutes each way; you can land on Moku Nui (the larger island) and explore the beach and nesting bird colony. Twogood Kayaks is located at 134B Hamakua Drive, Kailua — a short walk from the park.</p>
+            <div class="stop-tip"><strong>Tip</strong>Trade winds pick up in the afternoon, making the return paddle harder. Aim to reach the islands before 1pm and start heading back by 2pm. Plan to arrive at Kailua Beach by 3pm for a relaxed late-afternoon swim even if you skip the kayak. Bring reef-safe sunscreen and a dry bag for your phone.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span>
+      <div class="food-list">
+        <div class="food-row"><span class="food-name">Faria</span><span class="food-type">New Hawaiian / Portuguese</span><span class="food-note">Kailua Town · Reservations required · ~$20–35/person · Bean soup, lau lau stew, pasteis de nata · best dinner in Kailua</span></div>
+        <div class="food-row"><span class="food-name">Kalapawai Market</span><span class="food-type">Deli / Café</span><span class="food-note">Kailua · Sandwiches, salads, grab-and-go · good quick lunch between Hanauma Bay and the beach</span></div>
+        <div class="food-row"><span class="food-name">Waiāhole Poi Factory</span><span class="food-type">Hawaiian / Local</span><span class="food-note">Windward coast en route · Traditional poi, lau lau, haupia · a genuine cultural dining experience</span></div>
+        <div class="food-row"><span class="food-name">Island Brew Coffeehouse</span><span class="food-type">Coffee / Café</span><span class="food-note">Kailua · Post-kayak coffee and lunch · local single-origin beans, solid light menu</span></div>
+      </div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Waikiki → Makapu'u trailhead</td><td class="leg-time">25 min</td><td class="leg-miles">~13 mi</td><td class="leg-note">Leave 6:30am for 7am start</td></tr>
+            <tr><td class="leg-name">Makapu'u → Waiāhole Beach</td><td class="leg-time">20 min</td><td class="leg-miles">~10 mi</td><td class="leg-note">Quick windward coast stop</td></tr>
+            <tr><td class="leg-name">Waiāhole → Hanauma Bay</td><td class="leg-time">25 min</td><td class="leg-miles">~15 mi</td><td class="leg-note">Back toward Honolulu then east</td></tr>
+            <tr><td class="leg-name">Hanauma Bay → Kailua Beach</td><td class="leg-time">25 min</td><td class="leg-miles">~16 mi</td><td class="leg-note">Over the Pali into the windward side</td></tr>
+            <tr><td class="leg-name">Kailua → Waikiki (return)</td><td class="leg-time">30 min</td><td class="leg-miles">~14 mi</td><td class="leg-note">After dinner</td></tr>
+            <tr class="total-row"><td>Total</td><td>~1 hr 45 min</td><td>~68 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>Hanauma Bay reservations open 2 days in advance at 7am HST. Set a phone alarm for May 18 (Monday) at 7:00am to book for May 20. Slots sell out in minutes — don't be a minute late.</div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-chapter day-4 reveal">
+      <div class="day-header">
+        <div class="day-num-big">4</div>
+        <div class="day-meta">
+          <div class="day-date-label">Thursday, May 21</div>
+          <div class="day-title">Koko Head, Kualoa Ranch &amp; the Pali</div>
+          <div class="day-hotel">Waikiki / Kailua — Night 4</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Koko Head Crater Trail</div><div class="stop-meta">6:00 am · Free · 1,048 steps straight up · No reservation</div></div>
+            <div class="stop-teaser">O'ahu's most brutal short hike — 1,048 wooden railway ties bolted directly up the steep crater wall. No switchbacks, no shade, no mercy. Extraordinary at the top.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Koko Head is the physically demanding hike of the O'ahu trip — 1,048 wooden railway ties (remnants of a WWII military tramway) bolted straight up the outer wall of a volcanic crater. The climb is direct: no switchbacks, no flat sections, 930 feet of elevation gain over 0.45 miles. There is one exposed section mid-climb where the railway bridge crosses a gap — hands and feet required, but it's stable. At the top: 360-degree views spanning Hanauma Bay, the entire southeast coast, Maunalua Bay, and the Ko'olau range. Round trip takes 45–60 minutes depending on pace.</p>
+            <div class="stop-tip"><strong>Tip</strong>Start at 6am — the stairs face southeast and the sun hits the exposed face early. By 8am in May it's hot and crowded. Bring plenty of water and real shoes; sandals will destroy your feet. Free parking at Koko Head District Park.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kualoa Ranch</div><div class="stop-meta">10:00 am · 49-560 Kamehameha Hwy · UTV from $167 · Book at kualoa.com</div></div>
+            <div class="stop-teaser">4,000 acres of sacred Hawaiian valley — film site for Jurassic Park, LOST, and Kong: Skull Island. The UTV tour drives you deep into the jungle interior.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Kualoa Ranch is a working cattle ranch set in Ka'a'awa Valley on O'ahu's windward coast — 4,000 acres of dramatic landscape between sheer Ko'olau ridgelines and the ocean. The property has been a film location for over 70 productions including Jurassic Park (1993), Jurassic World, Godzilla, LOST, and Kong: Skull Island. The UTV (side-by-side utility vehicle) experience puts you behind the wheel on dirt trails through the jungle valleys with guides pointing out filming locations, native plants, and Hawaiian history. Tours run approximately 2–2.5 hours.</p>
+            <div class="stop-tip"><strong>Tip</strong>Book at kualoa.com well in advance — popular experiences sell out weeks ahead. The UTV tour starts at $167/person; a valid driver's license is required to drive. Closed-toe shoes required. The valley can be muddy — don't wear anything you care about.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Byodo-In Temple</div><div class="stop-meta">2:30 pm · 47-200 Kahekili Hwy · $7/adult · Open 8:30am–4:30pm</div></div>
+            <div class="stop-teaser">A full-scale replica of a 900-year-old Japanese temple set against a sheer 2,000-foot Ko'olau mountain wall. One of O'ahu's most striking and serene moments.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Built in 1968 to mark the 100th anniversary of Japanese immigration to Hawaii, the Byodo-In is a full-scale replica of the original Hōō-dō temple in Uji, Japan — same proportions, lacquered red wood, two-ton brass bell, and a massive gold-and-lacquer Buddha inside. What makes it exceptional is the setting: a sheer 2,000-foot Ko'olau mountain wall covered in green tropical vegetation, often wreathed in mist, rising directly behind the temple. Black swans and peacocks wander the koi-filled grounds. Remove shoes before entering the temple.</p>
+            <div class="stop-tip"><strong>Tip</strong>The temple is inside Valley of the Temples Memorial Park — $7/adult entry, last entrance 4:15pm. The late-afternoon cloud shadows moving across the Ko'olau ridge make for ideal photos. Speak quietly; this is an active place of prayer.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Nu'uanu Pali Lookout</div><div class="stop-meta">4:30 pm · $7 parking · Open daily 9am–4pm · Closes at 4pm sharp</div></div>
+            <div class="stop-teaser">O'ahu's most dramatic viewpoint — a 1,200-foot cliff where Kamehameha unified the Hawaiian Islands in 1795. Trade winds are strong enough to push you backward.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">The Nu'uanu Pali Lookout sits at 1,200 feet on the Ko'olau Ridge where the cliffs drop nearly 1,000 feet to the windward plain below. It was here in 1795 that King Kamehameha I's forces drove O'ahu warriors off the cliff's edge, unifying the Hawaiian Islands under a single ruler. The view takes in the entire windward coast from Kailua Bay south to the Kahalu'u peninsula north — one of the grandest panoramas on O'ahu. The trade winds funnel through the Ko'olau gap here with remarkable force.</p>
+            <div class="stop-tip"><strong>Tip</strong>The lot closes at 4pm — plan carefully, especially after the Byodo-In. Hold onto anything loose in the wind. The old Pali Highway (accessible by foot) offers an alternative viewpoint if the main lot is full.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span>
+      <div class="food-list">
+        <div class="food-row"><span class="food-name">Boots &amp; Kimo's</span><span class="food-type">Hawaiian Brunch</span><span class="food-note">Kailua · Post–Koko Head brunch · famous macadamia nut pancakes with white sauce · cash only, lines form early</span></div>
+        <div class="food-row"><span class="food-name">Kualoa Ranch Café</span><span class="food-type">Ranch / Local</span><span class="food-note">On-site at Kualoa · Ranch burgers, plate lunch, local poke · convenient between ranch activities</span></div>
+        <div class="food-row"><span class="food-name">Fete</span><span class="food-type">New American</span><span class="food-note">2 N Hotel St, Chinatown · Mon–Sat 11am–10pm · ~$20–35/person · Kualoa pork, local fish, great cocktails · reservations recommended</span></div>
+        <div class="food-row"><span class="food-name">MW Restaurant</span><span class="food-type">Hawaii Regional Cuisine</span><span class="food-note">1538 Kapiʻolani Blvd · James Beard nominees Wade Ueoka &amp; Michelle Karr-Ueoka · elevated Hawaiian dining · book ahead</span></div>
+      </div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Waikiki → Koko Head Crater</td><td class="leg-time">20 min</td><td class="leg-miles">~10 mi</td><td class="leg-note">Leave 5:45am for 6am start</td></tr>
+            <tr><td class="leg-name">Koko Head → Kualoa Ranch</td><td class="leg-time">30 min</td><td class="leg-miles">~22 mi</td><td class="leg-note">Up the windward coast</td></tr>
+            <tr><td class="leg-name">Kualoa Ranch → Byodo-In Temple</td><td class="leg-time">15 min</td><td class="leg-miles">~9 mi</td><td class="leg-note">Down Kahekili Hwy</td></tr>
+            <tr><td class="leg-name">Byodo-In → Pali Lookout</td><td class="leg-time">15 min</td><td class="leg-miles">~8 mi</td><td class="leg-note">Arrive well before 4pm close</td></tr>
+            <tr><td class="leg-name">Pali → downtown dinner</td><td class="leg-time">20 min</td><td class="leg-miles">~8 mi</td><td class="leg-note">Down Pali Hwy straight into Chinatown</td></tr>
+            <tr class="total-row"><td>Total</td><td>~1 hr 40 min</td><td>~57 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>The Pali Lookout closes at 4pm sharp — plan the afternoon carefully. The drive down the Pali Highway puts you directly into downtown Honolulu without backtracking, making Fete or MW Restaurant a natural dinner anchor.</div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-chapter day-5 reveal">
+      <div class="day-header">
+        <div class="day-num-big">5</div>
+        <div class="day-meta">
+          <div class="day-date-label">Friday, May 22</div>
+          <div class="day-title">North Shore — Pillbox, Waimea &amp; Haleiwa</div>
+          <div class="day-hotel">Waikiki / Kailua — Night 5</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Ehukai Pillbox Trail</div><div class="stop-meta">9:00 am · Free · Park near Sunset Elementary · ~1 hr round trip</div></div>
+            <div class="stop-teaser">A short, steep scramble to WWII-era concrete lookout bunkers above Sunset Beach — panoramic views of the entire North Shore coastline in both directions.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">The Ehukai Pillbox hike climbs to a pair of WWII military observation bunkers perched on a ridgeline above Sunset Beach — the world-famous big-wave surf break that makes headlines every winter. The trail is short (about 0.5 miles each way) but involves rope-assisted scrambling on loose red dirt. The payoff is a 180-degree view of the entire North Shore: Sunset Beach directly below, Ehukai Beach, the distant mountains, and the offshore reef breaks. In late May the North Shore is calm with smaller summer swells — very different from the 20–40 foot winter faces.</p>
+            <div class="stop-tip"><strong>Tip</strong>Park near Sunset Beach Elementary School (59-360 Kamehameha Hwy). Wear shoes with grip — the red dirt is treacherous when wet. Go in the morning before the trail gets crowded and the ridge sun gets hot. The 9am Sunrise Shack on the way out is an ideal first stop.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Waimea Valley</div><div class="stop-meta">11:00 am · 59-864 Kamehameha Hwy · $25/adult · Open daily · Check waimeavalley.net</div></div>
+            <div class="stop-teaser">A 1.5-mile walk through a botanical garden to a swimmable 45-foot waterfall — one of the most beautiful easy walks on O'ahu.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Waimea Valley is a 1,875-acre nature park and cultural center holding O'ahu's most intact ahupua'a (traditional Hawaiian land division). The main trail follows the valley floor through botanical garden collections — ethnobotanical plants, native Hawaiian species, and peacocks roaming freely — for about 0.75 miles each way to Waihi Falls, a 45-foot waterfall with a swimmable pool at the base. Life jackets are provided and required for the swim. The lifeguard makes the daily swim call at 9am. Allow 2 to 2.5 hours for the walk, a swim, and cultural exhibits.</p>
+            <div class="stop-tip"><strong>Tip</strong>Entry is $25/adult. Parking is included. Arrive when it opens — bus tours arrive mid-morning and the valley fills quickly. The waterfall swim is the highlight; check weather before going as it can be closed after heavy rain.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kawela Bay + Sunset Beach</div><div class="stop-meta">2:30 pm · Free · Kamehameha Hwy</div></div>
+            <div class="stop-teaser">Kawela Bay is a calm, tree-lined bay hidden past Turtle Bay Resort — ideal for a quiet swim. Sunset Beach is the legendary big-wave break, calmer and swimmable in May.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Kawela Bay, just past Turtle Bay Resort, is one of the North Shore's most peaceful spots — a small, sheltered bay lined with ironwood trees, almost entirely skipped by tourists. It's ideal for a calm swim or just sitting in the shade. Sunset Beach itself is the world-renowned big-wave site that hosts the Triple Crown of Surfing each winter; in May the same beach is calm and swimmable, and the setting — wide beach, clear water, the Ko'olau mountains behind — is still extraordinary.</p>
+            <div class="stop-tip"><strong>Tip</strong>Kawela Bay is accessed just past the Turtle Bay Resort entrance off Kamehameha Hwy — look for the roadside parking. No facilities at Kawela Bay; Sunset Beach has restrooms and showers. Both are free.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Haleiwa Town + Matsumoto Shave Ice</div><div class="stop-meta">4:30 pm · 66-111 Kamehameha Hwy · Daily 9am–6pm</div></div>
+            <div class="stop-teaser">The soul of the North Shore — surf shops, galleries, plate lunch spots, and the legendary Matsumoto Shave Ice that has been here since 1951.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Haleiwa is the de facto capital of the North Shore — a small historic town that has retained a distinctly local character despite heavy tourism. The main strip has surf shops selling boards and wax alongside galleries, clothing boutiques, and places to just sit and watch North Shore life. Matsumoto Shave Ice (founded 1951) is the benchmark O'ahu shave ice: machine-shaved ultra-fine ice topped with house-made syrups. Order a "special" with azuki beans in the bottom and a scoop of ice cream in the center. Giovanni's Shrimp Truck, the original North Shore shrimp truck, is parked nearby.</p>
+            <div class="stop-tip"><strong>Tip</strong>Matsumoto is at 66-111 Kamehameha Hwy — easy to find by the line. Giovanni's Shrimp Truck (66-472 Kamehameha Hwy) for scampi shrimp over rice is the classic pairing. Leave Haleiwa by 5:30pm to return for the 7:45pm fireworks in Waikiki (~55 min drive).</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Friday Night Fireworks, Waikiki</div><div class="stop-meta">7:45 pm · Hilton Hawaiian Village · Every Friday · Free</div></div>
+            <div class="stop-teaser">Honolulu's Friday tradition — a fireworks show launched over the ocean from the Hilton Hawaiian Village beach, visible across the entire Waikiki shoreline. May 22 is a Friday.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Every Friday evening at 7:45pm, the Hilton Hawaiian Village launches fireworks over the ocean — a tradition that has become the signature weekly event on O'ahu. The show runs about 10–15 minutes and is visible from the Hilton's own beach (best view), from anywhere along the Waikiki shoreline, and from hotel balconies facing west. May 22 falls on a Friday — a perfect alignment for the last full night of the O'ahu leg. The entire Waikiki strip takes on a celebratory atmosphere; bars set up outdoor seating and the beach fills with locals and visitors.</p>
+            <div class="stop-tip"><strong>Tip</strong>Claim a spot on Waikiki Beach by 7:15pm. Any patch of sand between the Hilton and the Outrigger Waikiki delivers a great view. Leave Haleiwa by 5:30pm to allow for the return drive and parking before showtime.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span>
+      <div class="food-list">
+        <div class="food-row"><span class="food-name">Sunrise Shack</span><span class="food-type">Breakfast / Coffee</span><span class="food-note">North Shore · ~$10–15 · Acai bowls, papaya bowls, cold brew · quintessential North Shore start</span></div>
+        <div class="food-row"><span class="food-name">Ted's Bakery</span><span class="food-type">Plate Lunch / Bakery</span><span class="food-note">59-024 Kamehameha Hwy · Daily ~7am–8pm · ~$12–18 · Garlic shrimp, chicken katsu, beef stew · famous choco-haupia pie</span></div>
+        <div class="food-row"><span class="food-name">Giovanni's Shrimp Truck</span><span class="food-type">Food Truck / Seafood</span><span class="food-note">66-472 Kamehameha Hwy, Haleiwa · ~$14–18 · Garlic butter scampi shrimp + two scoops rice · cash-friendly</span></div>
+        <div class="food-row"><span class="food-name">Matsumoto Shave Ice</span><span class="food-type">Dessert / Shave Ice</span><span class="food-note">66-111 Kamehameha Hwy · Daily 9am–6pm · ~$5–9 · Order the special: azuki beans + ice cream at the bottom</span></div>
+      </div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Waikiki → Ehukai Pillbox, Sunset Beach</td><td class="leg-time">45 min</td><td class="leg-miles">~38 mi</td><td class="leg-note">Via H-1 → H-2 to North Shore</td></tr>
+            <tr><td class="leg-name">Sunset Beach → Waimea Valley</td><td class="leg-time">10 min</td><td class="leg-miles">~4 mi</td><td class="leg-note">Kamehameha Hwy west</td></tr>
+            <tr><td class="leg-name">Waimea Valley → Kawela Bay / Sunset Beach</td><td class="leg-time">10 min</td><td class="leg-miles">~5 mi</td><td class="leg-note">Afternoon beach stop</td></tr>
+            <tr><td class="leg-name">Sunset Beach → Haleiwa</td><td class="leg-time">15 min</td><td class="leg-miles">~8 mi</td><td class="leg-note">Shave ice, shrimp truck</td></tr>
+            <tr><td class="leg-name">Haleiwa → Waikiki (return)</td><td class="leg-time">50 min</td><td class="leg-miles">~35 mi</td><td class="leg-note">Leave by 5:30pm for 7:45pm fireworks</td></tr>
+            <tr class="total-row"><td>Total</td><td>~2 hrs 10 min</td><td>~90 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>The last full day on O'ahu — North Shore in the day, fireworks at Waikiki at night. Leave Haleiwa by 5:30pm. Tomorrow morning is Pearl Harbor before the flight to the Big Island.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRACTICAL NOTES -->
+<div id="notes">
+  <div class="section reveal">
+    <p class="section-label">Practical Notes</p>
+    <div class="tips-grid">
+      <div class="tip-card"><div class="tip-title">Rental Car</div><div class="tip-body">Pick up at HNL on arrival May 18. Essential from Day 2 onward — O'ahu's bus system is too slow for the distances involved. Pre-book for the best rates; use a card with CDW coverage to avoid paying the counter add-on. Hotel parking in Waikiki is $25–55/night — cheaper garages are one block inland on Ala Wai Blvd.</div></div>
+      <div class="tip-card"><div class="tip-title">Hanauma Bay</div><div class="tip-body">Reservations open at exactly 7:00am, two days in advance, at hanaumabaystatepark.org. Set a phone alarm for May 18 at 7am HST. Slots sell out in 2–3 minutes — don't be late. Non-mineral sunscreen (oxybenzone, octinoxate) is banned — wear a rash guard or use zinc-oxide sunscreen. Closed Mon &amp; Tue.</div></div>
+      <div class="tip-card"><div class="tip-title">Diamond Head</div><div class="tip-body">Book at hawaiistateparks.org — $5/person + $10 parking. The parking lot is small, time-slotted, and strictly enforced. A 6:30am entry gets you near sunrise with minimal crowds. No water on trail; bring at least 1 liter. Closed-toe shoes recommended for the staircase sections.</div></div>
+      <div class="tip-card"><div class="tip-title">Kualoa Ranch</div><div class="tip-body">Book the UTV Experience at kualoa.com well ahead of travel — sells out weeks in advance. Valid driver's license required to operate the UTV. Wear closed-toe shoes. The valley can be muddy after rain — don't wear anything you'd mind ruining. Tours run approximately 2–2.5 hours.</div></div>
+      <div class="tip-card"><div class="tip-title">Reef-Safe Sunscreen</div><div class="tip-body">Hawaii law bans sunscreens containing oxybenzone and octinoxate. This is strictly enforced at Hanauma Bay where non-mineral sunscreen is prohibited entirely — wear a UPF rash guard instead. Use mineral-based (zinc oxide or titanium dioxide) sunscreen across all five days. Standard mainland sunscreens may result in fines at managed sites.</div></div>
+      <div class="tip-card"><div class="tip-title">North Shore Timing</div><div class="tip-body">The drive from Waikiki to Sunset Beach takes 45–55 minutes via H-2. The Ehukai Pillbox and Waimea Valley are both best in the morning before heat and bus tours. Leave Haleiwa by 5:30pm to return for the 7:45pm Friday fireworks in Waikiki — allow 50–55 minutes for the return drive.</div></div>
+      <div class="tip-card"><div class="tip-title">Pali Lookout</div><div class="tip-body">Closes at 4pm sharp — the lot is gated and there is no flexibility. Plan Day 4's afternoon with this in mind: leave Kualoa Ranch by 2pm, arrive Byodo-In by 2:30pm, Pali by 4:15pm latest. The old Pali Highway (accessible on foot) is a backup if the lot is full.</div></div>
+      <div class="tip-card"><div class="tip-title">Muddy Trails</div><div class="tip-body">Both Manoa Falls (Day 2) and Ehukai Pillbox (Day 5) can be extremely muddy — the red volcanic dirt becomes slippery clay when wet. Waterproof closed-toe shoes are essential for both. Sandals will not work. Check weather the night before; heavy overnight rain makes the pillbox trail significantly harder.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div id="checklist">
+  <div class="section-sm reveal">
+    <p class="section-label">Pre-Trip Booking Checklist</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Click each item to mark it complete.</p>
+    <div class="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Rental car — book at HNL for May 18 pickup. Pre-book for best rates</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Diamond Head — book at hawaiistateparks.org: $5/person + $10 parking. Reserve 6:30am slot for May 19</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Hanauma Bay — set phone alarm for May 18 at 7:00am HST exactly to book for May 20 (opens 2 days ahead)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Kualoa Ranch — UTV Experience for May 21. Book at kualoa.com — sells out weeks ahead</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Twogood Kayaks, Kailua — reserve a kayak for May 20 afternoon ($30–50/hr). Call or book online</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Faria restaurant, Kailua — dinner reservation for May 20. Small restaurant, fills fast</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Fete or MW Restaurant — dinner reservation for May 21 in Chinatown / downtown Honolulu</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Lyon Arboretum — free RSVP at lyonarboretum.manoa.hawaii.edu for May 19 visit</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Pearl Harbor / USS Arizona — book at recreation.gov up to 8 weeks ahead for May 23 morning</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Accommodation — 5 nights Waikiki / Kailua area, May 18–22</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Reef-safe sunscreen — buy before arriving (zinc oxide / titanium dioxide only — Hawaii state law)</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-title">O'ahu, <em style="font-family:'Cormorant Garamond',serif;font-style:italic">Hawaii</em></div>
+  <div class="footer-sub">May 18–22, 2026 &nbsp;·&nbsp; Waikiki / Kailua &nbsp;·&nbsp; 5 Days &nbsp;·&nbsp; Rental Car Required</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DAY_COLORS={1:'#2566A8',2:'#1A7A5A',3:'#B05C10',4:'#2E3F8A',5:'#7A5A08'};
+const map=L.map('map',{center:[21.43,-157.90],zoom:10,attributionControl:false});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+const mkIcon=c=>L.divIcon({className:'',html:`<div style="width:12px;height:12px;border-radius:50%;background:${c};border:2.5px solid white;box-shadow:0 1px 6px rgba(0,0,0,0.22);"></div>`,iconSize:[12,12],iconAnchor:[6,6]});
+
+[
+  {lat:21.3239,lng:-157.9260,label:"HNL Airport",day:1},
+  {lat:21.2769,lng:-157.8286,label:"Waikiki Beach",day:1},
+  {lat:21.2625,lng:-157.8028,label:"Diamond Head",day:2},
+  {lat:21.3143,lng:-157.8666,label:"Bishop Museum",day:2},
+  {lat:21.3329,lng:-157.8018,label:"Lyon Arboretum / Manoa Falls",day:2},
+  {lat:21.3104,lng:-157.6476,label:"Makapu'u Lighthouse Trail",day:3},
+  {lat:21.4566,lng:-157.8393,label:"Waiāhole Beach Park",day:3},
+  {lat:21.2696,lng:-157.6939,label:"Hanauma Bay",day:3},
+  {lat:21.3923,lng:-157.7395,label:"Kailua Beach",day:3},
+  {lat:21.2914,lng:-157.7005,label:"Koko Head Crater",day:4},
+  {lat:21.5147,lng:-157.8363,label:"Kualoa Ranch",day:4},
+  {lat:21.4444,lng:-157.8378,label:"Byodo-In Temple",day:4},
+  {lat:21.3650,lng:-157.7974,label:"Nu'uanu Pali Lookout",day:4},
+  {lat:21.6610,lng:-158.0521,label:"Ehukai Pillbox",day:5},
+  {lat:21.6397,lng:-158.0611,label:"Waimea Valley",day:5},
+  {lat:21.6777,lng:-158.0467,label:"Sunset Beach",day:5},
+  {lat:21.5919,lng:-158.1047,label:"Haleiwa",day:5},
+].forEach(s=>L.marker([s.lat,s.lng],{icon:mkIcon(DAY_COLORS[s.day])}).addTo(map)
+  .bindPopup(`<strong style="color:#1C1810">${s.label}</strong><br><span style="font-size:11px;color:#706860">Day ${s.day}</span>`));
+
+[
+  {pts:[[21.3239,-157.9260],[21.2950,-157.8700],[21.2769,-157.8286]],day:1},
+  {pts:[[21.2769,-157.8286],[21.2625,-157.8028],[21.2769,-157.8286],[21.2950,-157.8500],[21.3143,-157.8666],[21.3200,-157.8300],[21.3329,-157.8018]],day:2},
+  {pts:[[21.2769,-157.8286],[21.2800,-157.7400],[21.3104,-157.6476],[21.4000,-157.7600],[21.4566,-157.8393],[21.3500,-157.7200],[21.2696,-157.6939],[21.3300,-157.7400],[21.3923,-157.7395]],day:3},
+  {pts:[[21.2769,-157.8286],[21.2914,-157.7005],[21.3700,-157.7800],[21.4500,-157.8100],[21.5147,-157.8363],[21.4444,-157.8378],[21.3650,-157.7974],[21.3200,-157.8500],[21.2900,-157.8600],[21.2769,-157.8286]],day:4},
+  {pts:[[21.2769,-157.8286],[21.3800,-157.9200],[21.5000,-158.0000],[21.6610,-158.0521],[21.6397,-158.0611],[21.6777,-158.0467],[21.5919,-158.1047],[21.5000,-157.9800],[21.3800,-157.9200],[21.2769,-157.8286]],day:5}
+].forEach(r=>L.polyline(r.pts,{color:DAY_COLORS[r.day],weight:3,opacity:0.85,dashArray:'6 4'}).addTo(map));
+
+function toggleStop(el){el.classList.toggle('open')}
+function toggleCheck(el){el.classList.toggle('checked')}
+
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target)}})},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
