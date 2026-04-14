@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Island Hawaii — Trip Briefing — May 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --page:#F8F5F0;
+  --page2:#EDE8E0;
+  --page3:#D4CEC4;
+  --ink:#1C1810;
+  --ink2:#3A3028;
+  --muted:#706860;
+  --rule:rgba(58,48,40,0.12);
+  --green:#1B5E38;
+  --green-light:#EEF4EF;
+  --green-mid:#2E6840;
+  --fern:#1B5E38;
+  --d1:#2E6840; --d1b:#F5FAF6; --d1-dark:#1B4028;
+  --d2:#0D6875; --d2b:#EFF9FA; --d2-dark:#084858;
+  --d3:#B03820; --d3b:#FEF5F2; --d3-dark:#7A2010;
+  --d4:#2E5C8A; --d4b:#F0F5FB; --d4-dark:#1A3A5C;
+  --d5:#7A5A08; --d5b:#FEFAF0; --d5-dark:#4A3404;
+  --ocean:#0D6875;
+  --ocean-bg:#E0F4F6;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--page);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;background:rgba(212,206,196,0.98);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--rule)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink);letter-spacing:0.04em}
+.nav-logo em{font-style:italic;color:var(--green)}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--ink)}
+
+/* HERO */
+.hero{padding:80px 40px 64px;background:#1B5E38;border-bottom:0.5px solid rgba(0,0,0,0.1);text-align:center}
+.hero-bg{display:none}
+.hero-shapes{display:none}
+.hero-content{max-width:760px;margin:0 auto}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:rgba(180,230,190,0.8);margin-bottom:20px;opacity:0;animation:rise 0.7s ease 0.1s forwards}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,88px);font-weight:300;line-height:0.92;color:#F0F9F2;letter-spacing:-0.02em;opacity:0;animation:rise 0.8s ease 0.2s forwards}
+.hero h1 em{font-style:italic;color:#A8E6BC;display:block}
+.hero-sub{font-size:15px;font-weight:300;color:rgba(210,240,218,0.65);margin-top:20px;letter-spacing:0.05em;opacity:0;animation:rise 0.7s ease 0.35s forwards}
+.hero-dates{display:inline-flex;align-items:center;gap:14px;margin-top:24px;padding:10px 24px;border:0.5px solid rgba(255,255,255,0.18);border-radius:40px;font-size:13px;color:rgba(210,240,218,0.6);letter-spacing:0.06em;opacity:0;animation:rise 0.7s ease 0.45s forwards}
+.hero-dates strong{color:#F0F9F2;font-weight:500}
+.scroll-hint{display:none}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--page);border-bottom:1px solid var(--rule)}
+.stat{padding:28px 20px;text-align:center;border-right:0.5px solid var(--rule)}
+.stat:last-child{border-right:none}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--ink)}
+.stat-lbl{font-size:11px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.stat-sub{font-size:11px;color:var(--green);margin-top:4px;font-weight:500}
+
+/* SECTIONS */
+.section{max-width:1100px;margin:0 auto;padding:80px 40px}
+.section-sm{max-width:800px;margin:0 auto;padding:80px 40px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--green);margin-bottom:40px;display:flex;align-items:center;gap:16px}
+.section-label::after{content:'';flex:1;height:0.5px;background:var(--rule)}
+
+/* OVERVIEW */
+.overview-text{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.2vw,26px);font-weight:300;line-height:1.65;color:var(--ink2)}
+
+/* QUICK FACTS */
+.facts-grid{display:grid;grid-template-columns:160px 1fr;border:0.5px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.fact-key{padding:14px 20px;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);background:var(--green-light);border-bottom:0.5px solid var(--rule);display:flex;align-items:center}
+.fact-val{padding:14px 20px;font-size:14px;color:var(--ink2);background:#FFFFFF;border-bottom:0.5px solid var(--rule);display:flex;align-items:center}
+.fact-key:last-of-type,.fact-val:last-of-type{border-bottom:none}
+
+/* MAP */
+.map-wrap{border-radius:var(--r);overflow:hidden;border:0.5px solid var(--rule);box-shadow:0 2px 16px rgba(0,0,0,0.06)}
+#map{width:100%;height:500px}
+.map-legend{display:flex;flex-wrap:wrap;gap:20px;padding:14px 20px;background:var(--page2);border-top:0.5px solid var(--rule)}
+.leg-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* DAY CHAPTERS */
+.days-wrapper{display:flex;flex-direction:column}
+.day-chapter{border-top:0.5px solid var(--rule);padding:64px 0}
+.day-header{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:24px;margin-bottom:44px}
+.day-num-big{font-family:'Cormorant Garamond',serif;font-size:120px;font-weight:300;line-height:0.85;letter-spacing:-0.04em;opacity:0.08;user-select:none;margin-top:-8px}
+.day-date-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.day-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:300;line-height:1.1}
+.day-hotel{margin-top:12px;display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:0.06em}
+.day-hotel::before{content:'';width:20px;height:0.5px}
+
+.day-2 .day-num-big,.day-2 .day-title{color:var(--d2)}
+.day-3 .day-num-big,.day-3 .day-title{color:var(--d3)}
+.day-4 .day-num-big,.day-4 .day-title{color:var(--d4)}
+.day-5 .day-num-big,.day-5 .day-title{color:var(--d5)}
+.day-2 .day-hotel{color:var(--d2)}.day-2 .day-hotel::before{background:var(--d2)}
+.day-3 .day-hotel{color:var(--d3)}.day-3 .day-hotel::before{background:var(--d3)}
+.day-4 .day-hotel{color:var(--d4)}.day-4 .day-hotel::before{background:var(--d4)}
+.day-5 .day-hotel{color:var(--d5)}.day-5 .day-hotel::before{background:var(--d5)}
+
+/* STOPS */
+.stops-label,.driving-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:block}
+.day-2 .stops-label,.day-2 .driving-label{color:var(--d2)}
+.day-3 .stops-label,.day-3 .driving-label{color:var(--d3)}
+.day-4 .stops-label,.day-4 .driving-label{color:var(--d4)}
+.day-5 .stops-label,.day-5 .driving-label{color:var(--d5)}
+
+.stops-list{display:flex;flex-direction:column;gap:1px;margin-bottom:40px}
+.stop-card{background:#FFFFFF;border:0.5px solid var(--rule);overflow:hidden;cursor:pointer;transition:background 0.15s}
+.stop-card:first-child{border-radius:var(--r) var(--r) 0 0}
+.stop-card:last-child{border-radius:0 0 var(--r) var(--r)}
+.stop-card:only-child{border-radius:var(--r)}
+.stop-card:hover{background:var(--page2)}
+.stop-header{display:grid;grid-template-columns:200px 1fr auto;align-items:center;gap:22px;padding:16px 20px}
+.stop-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--ink);line-height:1.2}
+.stop-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.stop-teaser{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.stop-toggle{width:24px;height:24px;border-radius:50%;border:0.5px solid var(--rule);background:var(--page);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;color:var(--muted);font-size:14px}
+.stop-card.open .stop-toggle{transform:rotate(45deg)}
+.day-2 .stop-card.open .stop-toggle{background:var(--d2);border-color:var(--d2);color:white}
+.day-3 .stop-card.open .stop-toggle{background:var(--d3);border-color:var(--d3);color:white}
+.day-4 .stop-card.open .stop-toggle{background:var(--d4);border-color:var(--d4);color:white}
+.day-5 .stop-card.open .stop-toggle{background:var(--d5);border-color:var(--d5);color:white}
+.day-2 .stop-card:hover{background:var(--d2b)}
+.day-3 .stop-card:hover{background:var(--d3b)}
+.day-4 .stop-card:hover{background:var(--d4b)}
+.day-5 .stop-card:hover{background:var(--d5b)}
+
+.food-label{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:block;margin-top:40px}
+.day-1 .food-label{color:var(--d1)}.day-2 .food-label{color:var(--d2)}.day-3 .food-label{color:var(--d3)}.day-4 .food-label{color:var(--d4)}.day-5 .food-label{color:var(--d5)}
+.food-list{display:flex;flex-direction:column;gap:1px;margin-bottom:40px}
+.food-row{display:flex;align-items:center;gap:14px;padding:11px 16px;background:#FFFFFF;border:0.5px solid var(--rule);font-size:13px}
+.food-row:first-child{border-radius:var(--r) var(--r) 0 0}
+.food-row:last-child{border-radius:0 0 var(--r) var(--r)}
+.food-row:only-child{border-radius:var(--r)}
+.food-name{font-weight:500;color:var(--ink);min-width:180px;flex-shrink:0}
+.food-type{font-size:11px;color:var(--muted);border:0.5px solid var(--rule);border-radius:20px;padding:2px 8px;white-space:nowrap;flex-shrink:0}
+.food-note{color:var(--muted);flex:1;font-size:12px}
+.stop-body{display:none;padding:0 20px 18px;border-top:0.5px solid var(--rule)}
+.stop-card.open .stop-body{display:block}
+.stop-desc{font-size:14px;color:var(--ink2);line-height:1.75;padding-top:16px}
+.stop-tip{margin-top:12px;padding:11px 15px;border-radius:0 6px 6px 0;border-left:2px solid;font-size:13px;color:var(--ink2);line-height:1.6}
+.day-2 .stop-tip{background:var(--d2b);border-color:var(--d2)}
+.day-3 .stop-tip{background:var(--d3b);border-color:var(--d3)}
+.day-4 .stop-tip{background:var(--d4b);border-color:var(--d4)}
+.day-5 .stop-tip{background:var(--d5b);border-color:var(--d5)}
+.stop-tip strong{display:block;margin-bottom:2px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+.day-2 .stop-tip strong{color:var(--d2)}.day-3 .stop-tip strong{color:var(--d3)}
+.day-4 .stop-tip strong{color:var(--d4)}.day-5 .stop-tip strong{color:var(--d5)}
+
+/* DRIVE TABLE */
+.drive-table-wrap{border:0.5px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.drive-table{width:100%;border-collapse:collapse;font-size:14px}
+.drive-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border-bottom:0.5px solid var(--rule)}
+.day-1 .drive-table th{color:var(--ink);background:#A8A098}
+.day-2 .drive-table th{color:var(--ink);background:#A8A098}
+.day-3 .drive-table th{color:var(--ink);background:#A8A098}
+.day-4 .drive-table th{color:var(--ink);background:#A8A098}
+.day-5 .drive-table th{color:var(--ink);background:#A8A098}
+.drive-table td{padding:11px 14px;border-bottom:0.5px solid var(--rule);vertical-align:middle;background:#FFFFFF}
+
+.drive-table tr:last-child td{border-bottom:none}
+.leg-name{color:var(--ink2);font-size:13px}
+.leg-time{color:var(--ink);font-weight:500;white-space:nowrap}
+.leg-miles{color:var(--muted);font-size:12px}
+.leg-note{color:var(--muted);font-size:12px;font-style:italic}
+.total-row td{font-weight:600;font-size:13px;border-top:1.5px solid;border-bottom:none!important}
+.day-1 .total-row td{background:#A8A098!important;color:var(--ink);border-color:#8A8478;font-weight:600}
+.day-2 .total-row td{background:#A8A098!important;color:var(--ink);border-color:#8A8478;font-weight:600}
+.day-3 .total-row td{background:#A8A098!important;color:var(--ink);border-color:#8A8478;font-weight:600}
+.day-4 .total-row td{background:#A8A098!important;color:var(--ink);border-color:#8A8478;font-weight:600}
+.day-5 .total-row td{background:#A8A098!important;color:var(--ink);border-color:#8A8478;font-weight:600}
+
+.day-note{margin-top:14px;padding:12px 15px;border-radius:0 6px 6px 0;border-left:2px solid;font-size:13px;color:var(--ink2);line-height:1.6}
+.day-2 .day-note{background:var(--d2b);border-color:var(--d2)}
+.day-3 .day-note{background:var(--d3b);border-color:var(--d3)}
+.day-4 .day-note{background:var(--d4b);border-color:var(--d4)}
+.day-5 .day-note{background:var(--d5b);border-color:var(--d5)}
+.day-note strong{display:block;margin-bottom:2px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+.day-2 .day-note strong{color:var(--d2)}.day-3 .day-note strong{color:var(--d3)}
+.day-4 .day-note strong{color:var(--d4)}.day-5 .day-note strong{color:var(--d5)}
+
+/* PRACTICAL NOTES */
+#notes{background:var(--page);border-top:1px solid var(--rule)}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tip-card{background:#FFFFFF;border:0.5px solid var(--rule);border-radius:var(--r);padding:22px;transition:box-shadow 0.2s,transform 0.2s}
+.tip-card:hover{box-shadow:0 2px 12px rgba(27,94,56,0.1);transform:translateY(-2px)}
+.tip-title{font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.tip-body{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* CHECKLIST */
+#checklist{background:var(--page2);border-top:1px solid var(--rule)}
+.checklist{display:flex;flex-direction:column;gap:2px;max-width:680px}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:#FFFFFF;border:0.5px solid var(--rule);cursor:pointer;transition:background 0.15s;user-select:none}
+.check-item:first-child{border-radius:var(--r) var(--r) 0 0}
+.check-item:last-child{border-radius:0 0 var(--r) var(--r)}
+.check-item:hover{background:var(--green-light)}
+.check-box{width:17px;height:17px;border-radius:4px;flex-shrink:0;margin-top:1px;border:1.5px solid var(--rule);background:var(--page2);display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.check-item.checked .check-box{background:var(--fern);border-color:var(--fern)}
+.check-item.checked .check-box::after{content:'✓';font-size:10px;color:white;font-weight:700}
+.check-item.checked .check-text{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(138,120,96,0.4)}
+.check-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+
+/* FOOTER */
+footer{border-top:1px solid var(--rule);padding:36px 40px;text-align:center;background:var(--page2)}
+.footer-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--green);margin-bottom:6px}
+.footer-sub{font-size:12px;color:var(--muted);letter-spacing:0.1em}
+
+/* ANIMATIONS */
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  nav{padding:0 20px}.nav-links{gap:14px}
+  .section,.section-sm{padding:50px 20px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(n+3){border-top:0.5px solid var(--rule)}
+  .day-header{gap:14px}.day-num-big{font-size:72px}
+  .stop-header{grid-template-columns:1fr auto;gap:10px}.stop-teaser{display:none}
+  .facts-grid{grid-template-columns:120px 1fr}.leg-note{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Big Island, <em>Hawaii</em></div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#itinerary">Itinerary</a>
+    <a href="#notes">Notes</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Trip Briefing · May 2026</p>
+    <h1>Big<br><em>Island</em></h1>
+    <p class="hero-sub">Kona &nbsp;·&nbsp; Hilo</p>
+    <div class="hero-dates"><strong>May 23</strong> &nbsp;–&nbsp; arrive noon &nbsp;–&nbsp; <strong>May 28</strong> depart noon</div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">~8.5 hrs</div><div class="stat-lbl">Total driving</div></div>
+  <div class="stat"><div class="stat-val">~340 mi</div><div class="stat-lbl">Total miles</div></div>
+  <div class="stat"><div class="stat-val">12</div><div class="stat-lbl">Stops</div><div class="stat-sub">Both sides of the island</div></div>
+  <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Nights</div><div class="stat-sub">Kona · Hilo · Kona</div></div>
+</div>
+
+<div id="overview">
+  <div class="section-sm reveal">
+    <p class="section-label">Overview</p>
+    <p class="overview-text">This itinerary covers both the west (Kona) and east (Hilo) sides of the Big Island over five days. You arrive on the 23rd for a relaxed first evening in Kona. Day 2 takes you up the Kohala Coast for snorkeling and the coffee farm. Day 3 crosses to the east side via the north — Waipio Valley and Akaka Falls — before checking into Hilo. Day 4 is the big east-side day: Volcanoes in the morning and Mauna Kea in the evening. Day 5 loops around the southern tip — Green Sand Beach and Punalu'u — before driving up the west coast to Kona for the final night.</p>
+  </div>
+  <div class="section reveal" style="padding-top:0">
+    <p class="section-label">Quick Facts</p>
+    <div class="facts-grid" style="max-width:680px">
+      <div class="fact-key">Arrival</div><div class="fact-val">Saturday, May 23, 2026 — noon, Kona International Airport (KOA)</div>
+      <div class="fact-key">Departure</div><div class="fact-val">Thursday, May 28, 2026 — noon, Kona International Airport (KOA)</div>
+      <div class="fact-key">Nights 1–2</div><div class="fact-val">Kona (West side) — May 23 &amp; 24</div>
+      <div class="fact-key">Nights 3–4</div><div class="fact-val">Hilo (East side) — May 25 &amp; 26</div>
+      <div class="fact-key">Night 5</div><div class="fact-val">Kona (West side) — May 27</div>
+      <div class="fact-key">Transport</div><div class="fact-val">Rental car — standard vehicle covers most activities (see Practical Notes)</div>
+      <div class="fact-key">Season</div><div class="fact-val">Late May — warm and dry west side, lush east side; Mauna Kea summit ~33°F</div>
+    </div>
+  </div>
+  <div class="section reveal" style="padding-top:0">
+    <p class="section-label">Route map</p>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#2E6840"></div>Day 1 — Arrive Kona</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#0D6875"></div>Day 2 — Kohala Divers &amp; Coffee Farm</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#B03820"></div>Day 3 — North loop → Hilo</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2E5C8A"></div>Day 4 — Volcanoes &amp; Mauna Kea</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#7A5A08"></div>Day 5 — South loop → Kona</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="itinerary" class="section">
+  <p class="section-label">Day-by-Day Itinerary</p>
+  <div class="days-wrapper">
+
+    <!-- DAY 1 -->
+    <div class="day-chapter day-1 reveal">
+      <div class="day-header">
+        <div class="day-num-big">1</div>
+        <div class="day-meta">
+          <div class="day-date-label">Saturday, May 23</div>
+          <div class="day-title">Arrive &amp; Settle, Kona</div>
+          <div class="day-hotel">Kona — Night 1</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kailua-Kona Town</div><div class="stop-meta">Alii Drive · Walk from most hotels</div></div>
+            <div class="stop-teaser">The main strip of Kona — waterfront restaurants, coffee shops, local boutiques and the Hulihee Palace. A low-key intro to the island.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Kailua-Kona is the social heart of the Big Island's west side, centered on Alii Drive — a breezy oceanfront strip lined with open-air restaurants, coffee bars pouring 100% Kona, surf shops, and small galleries. It's an easy walking area once you park. The historic Hulihee Palace (a 19th-century royal vacation home) sits right on the waterfront and is worth a look. Afternoon arrival gives you time to get your bearings, grab lunch, and explore at a gentle pace before the trip kicks into gear tomorrow.</p>
+            <div class="stop-tip"><strong>Tip</strong>Parking on Alii Drive fills fast — use the free lot on Kuakini Hwy and walk down. The stretch between Hulihe'e Palace and the Coconut Grove Marketplace has the best concentration of restaurants and is very walkable.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kahaluu Beach Park</div><div class="stop-meta">2 mi south of Kona · Open 7am–8pm · Free parking</div></div>
+            <div class="stop-teaser">One of the best and most accessible snorkel spots on the island — calm, shallow reef teeming with turtles and tropical fish. A short drive from town.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Kahaluu Beach Park is consistently rated one of the top snorkel sites in Hawaii for accessibility — the reef starts just a few feet from shore, the water is calm, and the marine life is abundant. Hawaiian green sea turtles are regular visitors, often grazing on the algae-covered rocks within arm's reach (keep a respectful distance). Reef fish in every color are everywhere. The beach itself is small with a black-lava shoreline, but there's sand for lounging, restrooms, and a surf shack that rents snorkel gear if you don't have your own.</p>
+            <div class="stop-tip"><strong>Tip</strong>Arrive before 10am for the calmest water and fewest people. Entry to the water is over a rocky shelf — water shoes are helpful. Snorkel gear rental is available at the beach for around $15.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span><div class="food-list"><div class="food-row"><span class="food-name">Umekes Fish Market Bar & Grill</span><span class="food-type">Poke / Local</span><span class="food-note">Top-rated poke and fresh fish — try the avo poke or Next Level Lau Lau. Big portions, local favourite</span></div><div class="food-row"><span class="food-name">Broke Da Mouth Grindz</span><span class="food-type">Hawaiian / Local</span><span class="food-note">Featured on Diners, Drive-Ins & Dives — oxtail adobo, garlic furikake chicken, kalbi beef ribs. Real-deal local grindz</span></div><div class="food-row"><span class="food-name">Jackie Rey's</span><span class="food-type">Seafood / Steak</span><span class="food-note">Seafood Trio, ribeye, kalua pork spring rolls. Happy hour 3:30–5:30pm with local beers on tap. Book ahead</span></div><div class="food-row"><span class="food-name">Kona Brewing Co.</span><span class="food-type">Brewery</span><span class="food-note">Flagship brewery — Longboard Lager, Pipeline Porter (brewed with Kona coffee), fish tacos. Free tours 10:30am & 3pm</span></div></div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">KOA Airport → Kona hotel</td><td class="leg-time">15 min</td><td class="leg-miles">~8 mi</td><td class="leg-note">Check in, drop bags</td></tr>
+            <tr><td class="leg-name">Hotel → Kailua-Kona town</td><td class="leg-time">5 min</td><td class="leg-miles">~1 mi</td><td class="leg-note">Walk or short drive</td></tr>
+            <tr><td class="leg-name">Town → Kahaluu Beach Park</td><td class="leg-time">10 min</td><td class="leg-miles">~2 mi</td><td class="leg-note">Afternoon snorkel</td></tr>
+            <tr class="total-row"><td>Total</td><td>~30 min</td><td>~11 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>This is an intentionally relaxed day — no long drives, no early starts. Use the afternoon and evening to adjust to island time before the bigger days ahead.</div>
+    </div>
+
+
+    <!-- DAY 2 -->
+    <div class="day-chapter day-2 reveal">
+      <div class="day-header">
+        <div class="day-num-big">2</div>
+        <div class="day-meta">
+          <div class="day-date-label">Sunday, May 24</div>
+          <div class="day-title">West Side — Snorkel &amp; Coffee Farm</div>
+          <div class="day-hotel">Kona — Night 2</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Kohala Divers — Snorkel / Dive</div><div class="stop-meta">Kawaihae Harbor &nbsp;·&nbsp; Open 8am–5pm &nbsp;·&nbsp; Rated 4.9 stars</div></div>
+            <div class="stop-teaser">Small-boat morning snorkel trip along the pristine Kohala Coast reef. Spinner dolphins, sea turtles, and moray eels common in May.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">One of the best-reviewed dive and snorkel operators on the Big Island, Kohala Divers runs small-boat trips to pristine reef sites along the Kohala Coast — an area known for exceptional water clarity, healthy coral, and abundant marine life. Morning snorkel trips typically visit two sites and last 2–3 hours. Common sightings include spinner dolphins, green sea turtles, octopus, moray eels, and a wide variety of reef fish. Spinner dolphins are frequently encountered in May, often riding the bow wave. Non-certified divers and non-swimmers can snorkel at the same sites while certified divers go deeper.</p>
+            <div class="stop-tip"><strong>Tip</strong>Book well in advance — morning slots fill up weeks ahead, especially in late May. Morning boat slots start at 8am. Confirm exact departure time when booking.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Heavenly Hawaiian Kona Coffee Farm</div><div class="stop-meta">Holualoa hills · Open until 4:30pm</div></div>
+            <div class="stop-teaser">Guided tour of a working 100% Kona coffee farm with five tastings and sweeping Pacific views. Rated 4.9 stars.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">A working 100% Kona coffee farm set on the slopes above the Kona coast with sweeping Pacific views. Guided one-hour tours walk you through the entire process — from cherry to roast — with five different coffee tastings included. The farm grows its own arabica on volcanic soil in the famous Kona coffee belt, one of the few places in the US where coffee is commercially grown. The gift shop carries single-origin bags you won't find elsewhere. Rated 4.9 stars across nearly 3,000 reviews.</p>
+            <div class="stop-tip"><strong>Tip</strong>Last tour of the day typically runs at 3:30pm. Book in advance online; walk-ins are accepted but slots fill quickly in peak season.</div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span><div class="food-list"><div class="food-row"><span class="food-name">Huggo's</span><span class="food-type">Seafood</span><span class="food-note">Open-air lanai above the waves — ahi, mahi mahi, ono off the boat. Teriyaki steak a local classic since 1969. Book ahead</span></div><div class="food-row"><span class="food-name">Da Poke Shack</span><span class="food-type">Poke / Local</span><span class="food-note">Tiny spot, lines out the door — award-winning Wet Hawaiian poke with roasted kukui nuts. Cash-friendly, takeout only</span></div><div class="food-row"><span class="food-name">Kona Inn Restaurant</span><span class="food-type">Seafood / Bar</span><span class="food-note">Historic open-air bar on the ocean — fresh fish daily, macadamia nut crusted mahi mahi, ribeye, best Mai Tai in Kona</span></div><div class="food-row"><span class="food-name">Kona Brewing Co.</span><span class="food-type">Brewery</span><span class="food-note">If you missed Day 1 — taproom open until 10pm, special Backyard Batch kegs tapped first & third Fridays</span></div></div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Kona → Kohala Divers, Kawaihae</td><td class="leg-time">30 min</td><td class="leg-miles">~26 mi</td><td class="leg-note">Morning — book 8am slot</td></tr>
+            <tr><td class="leg-name">Kohala Divers → Kona Coffee Farm</td><td class="leg-time">30 min</td><td class="leg-miles">~22 mi</td><td class="leg-note">After snorkel trip</td></tr>
+            <tr class="total-row"><td>Total</td><td>~1 hr</td><td>~48 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DAY 1 -->
+    <div class="day-chapter day-3 reveal">
+      <div class="day-header">
+        <div class="day-num-big">3</div>
+        <div class="day-meta">
+          <div class="day-date-label">Monday, May 25</div>
+          <div class="day-title">North Loop — Akaka Falls &amp; Waipio → Hilo</div>
+          <div class="day-hotel">Hilo — Night 3</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Waipio Valley Lookout</div><div class="stop-meta">Hamakua Coast &nbsp;·&nbsp; Free &nbsp;·&nbsp; No hiking required</div></div>
+            <div class="stop-teaser">A sheer 2,000-foot green wall dropping to a black sand beach. Hawaii's most sacred valley and birthplace of Kamehameha I's power.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Waipio ("curving water") is the largest and most historically significant of the Big Island's amphitheater valleys, stretching a mile wide and six miles deep. It was a sacred gathering place for Hawaiian royalty and the birthplace of Kamehameha I's political power. The lookout at the valley's rim provides one of the most dramatic panoramas in all of Hawaii: a sheer 2,000-foot green wall dropping to a black sand beach, a winding river, and taro fields far below. The road into the valley grades at 25% in places — rental cars are not suited for it.</p>
+            <div class="stop-tip"><strong>Tip</strong>Do not attempt to drive into the valley with a standard rental car — the grade is genuinely dangerous and tow trucks charge significantly for extraction.</div>
+          </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">'Akaka Falls State Park</div><div class="stop-meta">Honomu, near Hilo &nbsp;·&nbsp; Open 8:30am–5pm &nbsp;·&nbsp; $5/vehicle</div></div>
+            <div class="stop-teaser">A 442-foot free-fall waterfall in a jungle of bamboo, heliconia, and tree ferns. A paved 30-minute loop — entirely different from west-side terrain.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">'Akaka Falls is one of the most spectacular waterfalls in Hawaii — a single, uninterrupted 442-foot free-fall plunging into a lush jungle gorge. The park's paved 0.4-mile loop trail winds through a dense canopy of bamboo, heliconia, ginger, and enormous tree ferns, passing a smaller 100-foot fall (Kahuna Falls) before reaching the main overlook. The trail takes 30–45 minutes at a leisurely pace and is accessible for most fitness levels.</p>
+            <div class="stop-tip"><strong>Tip</strong>The loop trail is paved but has uneven sections and some steps. The overlook platform can be slippery when wet. Bring bug spray — the jungle environment means mosquitoes.</div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span><div class="food-list"><div class="food-row"><span class="food-name">Punalu'u Bake Shop</span><span class="food-type">Bakery / Snack</span><span class="food-note">On the Hamakua Coast en route — Hawaiian sweet bread, malasadas, good road snack</span></div><div class="food-row"><span class="food-name">Seaside Restaurant</span><span class="food-type">Seafood</span><span class="food-note">Hilo institution on the lagoons — fresh mahi mahi, furikake salmon, blackened ahi. Dinner on arrival in Hilo</span></div><div class="food-row"><span class="food-name">Cafe 100</span><span class="food-type">Hawaiian / Local</span><span class="food-note">Birthplace of the loco moco — quick lunch stop in Hilo if you arrive early afternoon</span></div></div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Kona → Waipio Valley Lookout (via Saddle Road)</td><td class="leg-time">1 hr 30 min</td><td class="leg-miles">~75 mi</td><td class="leg-note">Scenic Saddle Road across the island</td></tr>
+            <tr><td class="leg-name">Waipio → 'Akaka Falls State Park</td><td class="leg-time">30 min</td><td class="leg-miles">~25 mi</td><td class="leg-note">South along Hamakua Coast</td></tr>
+            <tr><td class="leg-name">'Akaka Falls → Hilo (check in)</td><td class="leg-time">20 min</td><td class="leg-miles">~15 mi</td><td class="leg-note">Only 20 min from Hilo</td></tr>
+            <tr class="total-row"><td>Total</td><td>~3 hrs</td><td>~145 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>Drive north to Waipio first while you have fresh energy, then stop at Akaka Falls on the way back south — it sits conveniently between Waipio and Hilo. Check into Hilo by late afternoon and explore the town in the evening.</div>
+    </div>
+
+    <div class="day-chapter day-4 reveal">
+      <div class="day-header">
+        <div class="day-num-big">4</div>
+        <div class="day-meta">
+          <div class="day-date-label">Tuesday, May 26</div>
+          <div class="day-title">Volcanoes &amp; Mauna Kea</div>
+          <div class="day-hotel">Hilo — Night 4</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Hawai'i Volcanoes National Park</div><div class="stop-meta">Kilauea Caldera &nbsp;·&nbsp; Open 24 hrs &nbsp;·&nbsp; $30/vehicle (7-day pass)</div></div>
+            <div class="stop-teaser">Morning visit — cooler air, fewer crowds, steam vents at their most dramatic. Kilauea Iki trail, lava tube, Chain of Craters Road.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Home to one of the most active volcanoes on Earth, this 333,000-acre park is unlike any other in the national park system. A morning start from Hilo means you arrive before the tour buses, the light is better in the crater, and the cooler temperatures make the Kilauea Iki hike much more comfortable. Recommended sequence: Kilauea Iki trail (4 miles, moderate — descends across a hardened lava lake with steam vents), Thurston Lava Tube (500-year-old lava tunnel, easy 20-minute walk), then Chain of Craters Road down to the coast for dramatic lava field views. Aim to be done by noon.</p>
+            <div class="stop-tip"><strong>Tip</strong>The $30 entry fee covers 7 days with in-and-out privileges. Sulfur dioxide gas levels vary — check the NPS air quality report before the visit and avoid the caldera rim if vog is high.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Mauna Kea Summit &amp; Stargazing</div><div class="stop-meta">13,796 ft summit &nbsp;·&nbsp; Visitor Center open 9am–9:30pm</div></div>
+            <div class="stop-teaser">The tallest mountain on Earth from base to peak. Sunset above the cloud layer and the Milky Way to the naked eye.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">Mauna Kea is the tallest mountain on Earth when measured from its oceanic base, and its summit sits above 40% of Earth's atmosphere — making it home to the world's most powerful concentration of astronomical observatories. Arrive at the Visitor Center well before sunset to acclimatize, then drive to the summit for the sunset (breathtaking above the cloud layer) and stay for stargazing. The Milky Way is visible to the naked eye, and the Visitor Center offers free public stargazing programs with telescopes most clear evenings starting around 6pm.</p>
+            <div class="stop-tip"><strong>Tip</strong>Temperature at the summit averages 33°F regardless of valley conditions. Bring full warm layers. Allow a minimum of 30 minutes at the Visitor Center (9,200 ft) before proceeding — altitude sickness is a real risk. Most rental car agreements prohibit the summit road; confirm before assuming you can drive it, or book a guided stargazing tour.</div>
+          </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span><div class="food-list"><div class="food-row"><span class="food-name">Cafe 100</span><span class="food-type">Hawaiian / Local</span><span class="food-note">Grab a loco moco before leaving Hilo — birthplace of the dish, open from 9am, fuel up before the Kilauea hike</span></div><div class="food-row"><span class="food-name">Lava Rock Cafe</span><span class="food-type">Local / Hawaiian</span><span class="food-note">In Volcano village near the park — solid plate lunch for under $10, good post-hike stop before heading back to Hilo</span></div><div class="food-row"><span class="food-name">WSW Steakhouse</span><span class="food-type">Steak / Seafood</span><span class="food-note">Hilo Hawaiian Hotel — Prime &amp; Black Angus beef, bay views. Good dinner back in Hilo before the Mauna Kea ascent</span></div><div class="food-row"><span class="food-name">Ola Brew Co.</span><span class="food-type">Brewery</span><span class="food-note">Afternoon beer in Hilo between Volcanoes and Mauna Kea — local craft beers and ciders, outdoor brew yard</span></div></div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Hilo → Volcanoes NP</td><td class="leg-time">30 min</td><td class="leg-miles">~30 mi</td><td class="leg-note">Leave by 7am for best conditions</td></tr>
+            <tr><td class="leg-name">Volcanoes NP → Hilo (return)</td><td class="leg-time">30 min</td><td class="leg-miles">~30 mi</td><td class="leg-note">Back by noon — rest, lunch, Ola Brew</td></tr>
+            <tr><td class="leg-name">Hilo → Mauna Kea Visitor Center</td><td class="leg-time">45 min</td><td class="leg-miles">~35 mi</td><td class="leg-note">Depart ~3pm, acclimatize 30+ min</td></tr>
+            <tr><td class="leg-name">Visitor Center → Summit</td><td class="leg-time">30 min</td><td class="leg-miles">~10 mi</td><td class="leg-note">Steep, slow road — allow extra time</td></tr>
+            <tr><td class="leg-name">Summit → Hilo (after stargazing)</td><td class="leg-time">1 hr</td><td class="leg-miles">~45 mi</td><td class="leg-note"></td></tr>
+            <tr class="total-row"><td>Total</td><td>~3 hrs</td><td>~150 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>Leave Hilo by 7am for Volcanoes — morning light in the crater and cooler air make a big difference on the Kilauea Iki hike. The Mauna Kea Visitor Center hosts free stargazing programs most clear evenings from around 6pm — time your arrival to catch it before heading to the summit.</div>
+    </div>
+
+    <div class="day-chapter day-5 reveal">
+      <div class="day-header">
+        <div class="day-num-big">5</div>
+        <div class="day-meta">
+          <div class="day-date-label">Wednesday, May 27</div>
+          <div class="day-title">South Loop — Green Sand &amp; Black Sand</div>
+          <div class="day-hotel">Kona — Night 5</div>
+        </div>
+      </div>
+      <span class="stops-label">Stops</span>
+      <div class="stops-list">
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Punalu'u Black Sand Beach</div><div class="stop-meta">Ka'ū District &nbsp;·&nbsp; Open 24 hrs &nbsp;·&nbsp; Free parking</div></div>
+            <div class="stop-teaser">Jet-black volcanic sand, Hawaiian green sea turtles resting on shore, and a wild Pacific backdrop.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">One of the most visually dramatic beaches in Hawaii, Punalu'u is a broad expanse of jet-black volcanic sand formed by lava flowing into the sea and shattering on contact with cold water. Hawaiian green sea turtles (honu) regularly haul themselves onto the beach to rest — it's common to find a dozen or more at any given time. The juxtaposition of black sand, turquoise water, and lush green palms makes it one of the most photographed spots on the island.</p>
+            <div class="stop-tip"><strong>Tip</strong>Federal law requires you to stay at least 10 feet from resting turtles. Keep noise low and do not approach from the water side.</div>
+          </div>
+        </div>
+        <div class="stop-card" onclick="toggleStop(this)">
+          <div class="stop-header">
+            <div><div class="stop-name">Papakōlea Green Sand Beach</div><div class="stop-meta">South Point (Ka Lae) &nbsp;·&nbsp; 2.5 mi hike each way</div></div>
+            <div class="stop-teaser">One of only a handful of green sand beaches on Earth — its color comes from olivine crystals eroded from the surrounding cinder cone.</div>
+            <div class="stop-toggle">+</div>
+          </div>
+          <div class="stop-body">
+            <p class="stop-desc">One of only a handful of green sand beaches on Earth, Papakōlea gets its distinctive color from olivine crystals — a semi-precious mineral — eroded from the surrounding cinder cone. The beach sits inside a collapsed volcanic crater accessible only on foot or by rough-road vehicle. The hike is 2.5 miles each way across open, shadeless scrubland with consistent trade winds and May sun — bring far more water than you think you need. The payoff is remarkable: emerald-green sand, turquoise water, and sea turtles in the shallows.</p>
+            <div class="stop-tip"><strong>Tip</strong>Local residents operate informal truck shuttles from the trailhead parking area for roughly $20–25 cash per person each way. Widely used and saves significant time. Bring cash.</div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <span class="food-label">Food &amp; Drink</span><div class="food-list"><div class="food-row"><span class="food-name">Punalu'u Bake Shop</span><span class="food-type">Bakery / Snack</span><span class="food-note">En route near the black sand beach — Hawaiian sweet bread, malasadas. Good road fuel before the drive north</span></div><div class="food-row"><span class="food-name">Kona Inn Restaurant</span><span class="food-type">Seafood / Bar</span><span class="food-note">Historic open-air bar on the ocean — fresh fish, macadamia nut mahi mahi, ribeye, award-winning Mai Tais</span></div><div class="food-row"><span class="food-name">Huggo's</span><span class="food-type">Seafood</span><span class="food-note">Final sunset dinner on the water — ahi, mahi mahi, prime rib. Book a lanai table for the last evening</span></div><div class="food-row"><span class="food-name">Quinn's Almost by the Sea</span><span class="food-type">Bar &amp; Grill / Local</span><span class="food-note">Casual Kona bar — ribeye, kalbi ribs, ono fish tacos. Great low-key final night vibe</span></div><div class="food-row"><span class="food-name">Kona Brewing Co.</span><span class="food-type">Brewery</span><span class="food-note">Last chance for a Longboard Lager or Pipeline Porter at the source before departure tomorrow noon</span></div></div>
+      <span class="driving-label">Driving</span>
+      <div class="drive-table-wrap">
+        <table class="drive-table">
+          <thead><tr><th>Leg</th><th>Time</th><th>Miles</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="leg-name">Hilo → Punalu'u Black Sand Beach</td><td class="leg-time">1 hr</td><td class="leg-miles">~55 mi</td><td class="leg-note">First stop heading south</td></tr>
+            <tr><td class="leg-name">Punalu'u → Green Sand Beach trailhead</td><td class="leg-time">30 min</td><td class="leg-miles">~25 mi</td><td class="leg-note">Leave early — 2.5 mi hike or local truck ($20–25)</td></tr>
+            <tr><td class="leg-name">Punalu'u → Kona (dinner &amp; hotel)</td><td class="leg-time">1 hr 15 min</td><td class="leg-miles">~70 mi</td><td class="leg-note">Up the west coast, easy airport run tomorrow</td></tr>
+            <tr class="total-row"><td>Total</td><td>~3 hrs 15 min</td><td>~175 mi</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="day-note"><strong>Note</strong>Leave Hilo by 7:30am. Stop at Punalu'u first on the way south, then continue to Green Sand Beach before the midday heat. Drive up the west coast to Kona for a final dinner.</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="notes">
+  <div class="section reveal">
+    <p class="section-label">Practical Notes</p>
+    <div class="tips-grid">
+      <div class="tip-card"><div class="tip-title">Rental Car</div><div class="tip-body">A standard rental covers everything except Green Sand Beach (4WD to drive in — hike or take a local truck) and Mauna Kea summit (most agreements prohibit the summit road). Confirm Mauna Kea access with your rental company or book a guided stargazing tour.</div></div>
+      <div class="tip-card"><div class="tip-title">Volcanoes National Park</div><div class="tip-body">Entry is $30/vehicle, valid for 7 days. Allow 4–5 hours minimum. Do Kilauea Iki trail (4 mi, moderate), walk the Thurston Lava Tube, and drive Chain of Craters Road. Stay until dark for the lava glow — it intensifies significantly after sunset.</div></div>
+      <div class="tip-card"><div class="tip-title">Mauna Kea</div><div class="tip-body">Stop at the Visitor Center (9,200 ft) for at least 30 minutes before proceeding to the 13,796 ft summit. Summit temperature averages 33°F — bring full warm layers, not just a fleece. Anyone with heart or respiratory conditions should consult a doctor before ascending.</div></div>
+      <div class="tip-card"><div class="tip-title">Green Sand Beach</div><div class="tip-body">The hike is 2.5 miles each way across exposed, shadeless terrain — bring at least 2 liters of water per person. Local residents operate informal truck shuttles from the parking area for approximately $20–25 cash per person each way.</div></div>
+      <div class="tip-card"><div class="tip-title">Kohala Divers</div><div class="tip-body">Book well in advance — morning slots fill up weeks ahead. They offer snorkel and dive trips; non-divers and non-certified swimmers can snorkel at the same reef sites. Dolphins are frequently sighted in May.</div></div>
+      </div>
+      <div class="tip-card"><div class="tip-title">Packing Notes</div><div class="tip-body">Reef-safe sunscreen (required in Hawaii), sturdy closed-toe shoes for Volcanoes and lava fields, warm layers for Mauna Kea, cash for Green Sand Beach truck ($20–25), and a headlamp for the lava glow and Mauna Kea stargazing.</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="checklist">
+  <div class="section-sm reveal">
+    <p class="section-label">Pre-Trip Booking Checklist</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Click each item to mark it complete.</p>
+    <div class="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Rental car — confirm Mauna Kea summit road policy with rental company</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Kohala Divers — book morning snorkel/dive slot for May 24 (Day 2)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Accommodation — 2 nights Kona (May 23–24), 2 nights Hilo (May 25–26), 1 night Kona (May 27)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Hawaii Volcanoes NP — no reservation required, pay at gate ($30/vehicle)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Akaka Falls — $5/vehicle parking, no advance booking needed</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Mauna Kea stargazing tour — optional but recommended if rental car prohibits summit road</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Heavenly Hawaiian Kona Coffee Farm — walk-ins accepted but book ahead in peak season</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-title">Big Island, <em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--green)">Hawaii</em></div>
+  <div class="footer-sub">May 24–28, 2026 &nbsp;·&nbsp; Kona &nbsp;·&nbsp; Hilo &nbsp;·&nbsp; Kona &nbsp;·&nbsp; Rental Car Required</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DAY_COLORS={1:'#2E6840',2:'#0D6875',3:'#B03820',4:'#2E5C8A',5:'#7A5A08'};
+const map=L.map('map',{center:[19.55,-155.5],zoom:9,attributionControl:false});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+
+const mkIcon=c=>L.divIcon({className:'',html:`<div style="width:12px;height:12px;border-radius:50%;background:${c};border:2.5px solid white;box-shadow:0 1px 6px rgba(0,0,0,0.2);"></div>`,iconSize:[12,12],iconAnchor:[6,6]});
+
+[{lat:19.7074,lng:-156.045,label:"KOA Airport",day:1},
+ {lat:19.6400,lng:-155.9960,label:"Kailua-Kona Town",day:1},
+ {lat:19.5757,lng:-155.9742,label:"Kahaluu Beach Park",day:1},
+ {lat:19.5562,lng:-155.9298,label:"Kona Coffee Farm",day:2},
+ {lat:19.1358,lng:-155.5048,label:"Punalu'u Black Sand Beach",day:5},
+ {lat:18.9361,lng:-155.6465,label:"Green Sand Beach",day:5},
+ {lat:19.4964,lng:-155.4661,label:"Volcanoes NP",day:4},
+ {lat:19.73,lng:-155.09,label:"Hilo",day:3},
+ {lat:19.8532,lng:-155.155,label:"Akaka Falls",day:3},
+ {lat:20.118,lng:-155.5843,label:"Waipio Valley Lookout",day:3},
+ {lat:19.823,lng:-155.4694,label:"Mauna Kea",day:4},
+ {lat:20.0398,lng:-155.8305,label:"Kohala Divers",day:2},
+].forEach(s=>L.marker([s.lat,s.lng],{icon:mkIcon(DAY_COLORS[s.day])}).addTo(map)
+  .bindPopup(`<strong style="color:#1C1208">${s.label}</strong><br><span style="font-size:11px;color:#8A7860">Day ${s.day}</span>`));
+
+[{pts:[[19.7074,-156.045],[19.6400,-155.9960],[19.5757,-155.9742]],day:1},
+ {pts:[[19.6400,-155.9960],[19.7500,-155.9800],[19.8700,-155.8800],[20.0100,-155.8200],[20.0398,-155.8305],[19.9000,-155.8500],[19.7800,-155.9300],[19.5562,-155.9298],[19.6400,-155.9960]],day:2},
+ {pts:[[19.6400,-155.9960],[19.7400,-155.5800],[19.9200,-155.5400],[20.118,-155.5843],[19.9800,-155.4800],[19.8532,-155.155],[19.73,-155.09]],day:3},
+ {pts:[[19.73,-155.09],[19.5800,-155.2000],[19.4964,-155.4661],[19.5800,-155.2000],[19.73,-155.09],[19.7600,-155.4000],[19.823,-155.4694],[19.73,-155.09]],day:4},
+ {pts:[[19.73,-155.09],[19.4000,-155.2800],[19.1358,-155.5048],[19.0500,-155.5500],[18.9361,-155.6465],[19.0500,-155.6200],[19.2500,-155.8200],[19.4500,-155.9200],[19.6400,-155.9960]],day:5}
+].forEach(r=>L.polyline(r.pts,{color:DAY_COLORS[r.day],weight:3,opacity:0.85,dashArray:'6 4'}).addTo(map));
+
+function toggleStop(el){el.classList.toggle('open')}
+function toggleCheck(el){el.classList.toggle('checked')}
+
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target)}})},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
