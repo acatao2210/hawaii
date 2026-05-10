@@ -218,18 +218,18 @@ footer{background:var(--page2);border-top:0.5px solid var(--rule);text-align:cen
 <div id="overview">
   <div class="section reveal">
     <p class="section-label">Trip Overview</p>
-    <p class="overview-text">Ten nights across two of Hawai'i's most distinct islands — the layered, vibrant culture of O'ahu followed by the raw volcanic drama of the Big Island. Waikiki and Diamond Head give way to North Shore shave ice and Friday fireworks on the beach; Kona coffee and night-diving with manta rays lead to Kīlauea's active lava fields and the mist-shrouded valleys of the Hāmākua Coast. This is Hawai'i at full range.</p>
+    <p class="overview-text">Ten nights across two of Hawai'i's most distinct islands — the layered, vibrant culture of O'ahu followed by the raw volcanic drama of the Big Island. Based in Kāneʻohe on the windward side, Diamond Head and Manoa give way to North Shore golden hours and Friday fireworks from Waikiki; Kona coffee and night-diving with manta rays lead to Kīlauea's active lava fields and the mist-shrouded valleys of the Hāmākua Coast. This is Hawai'i at full range.</p>
     <div class="timeline-strip">
       <div class="tl-segment tl-oahu">
         <div class="tl-label">Days 1 – 5</div>
         <div class="tl-island">O'ahu</div>
-        <div class="tl-dates">May 18 – 22 · Waikiki / Kailua</div>
+        <div class="tl-dates">May 18 – 22 · Kāneʻohe</div>
         <div class="tl-highlights">
           <span class="tl-tag">Diamond Head</span>
-          <span class="tl-tag">Hanauma Bay</span>
           <span class="tl-tag">North Shore</span>
           <span class="tl-tag">Kualoa Ranch</span>
           <span class="tl-tag">Pearl Harbor</span>
+          <span class="tl-tag">Waikiki Fireworks</span>
         </div>
       </div>
       <div class="tl-segment tl-big">
@@ -264,17 +264,17 @@ footer{background:var(--page2);border-top:0.5px solid var(--rule);text-align:cen
           <div class="island-stats">
             <div class="istat"><span class="istat-val">5</span><span class="istat-lbl">Days</span></div>
             <div class="istat"><span class="istat-val">16+</span><span class="istat-lbl">Stops</span></div>
-            <div class="istat"><span class="istat-val">~180</span><span class="istat-lbl">Miles</span></div>
+            <div class="istat"><span class="istat-val">~240</span><span class="istat-lbl">Miles</span></div>
           </div>
           <ul class="island-highlights">
             <li>Diamond Head summit hike at sunrise — 6:30am, book ahead</li>
             <li>Bishop Museum — world's largest Hawaiian artifact collection</li>
-            <li>Hanauma Bay snorkeling — reserve 2 days in advance at 7am HST</li>
-            <li>Kualoa Ranch UTV tour — Jurassic Park film site, 4,000 acres</li>
-            <li>Byodo-In Temple + Nu'uanu Pali Lookout, windward coast</li>
-            <li>North Shore: Waimea Valley waterfall swim + Haleiwa shave ice</li>
+            <li>USS Arizona Memorial, Pearl Harbor — book free timed entry at recreation.gov</li>
+            <li>Kailua Beach + Mokulua Islands kayak — windward O'ahu's finest afternoon</li>
+            <li>North Shore: Ehukai Pillbox, Waimea Valley waterfall swim + Haleiwa shave ice (Thu)</li>
+            <li>Kualoa Ranch UTV tour — Jurassic Park film site, 4,000 acres (Fri)</li>
+            <li>Byodo-In Temple — full-scale replica against 2,000 ft Ko'olau wall (Fri)</li>
             <li>Friday night fireworks from Waikiki Beach (May 22)</li>
-            <li>Pearl Harbor / USS Arizona memorial (morning of May 23)</li>
           </ul>
           <a href="Oahu.html" class="island-link">View O'ahu Briefing</a>
         </div>
@@ -318,7 +318,7 @@ footer{background:var(--page2);border-top:0.5px solid var(--rule);text-align:cen
         <div class="fact-key">Arrival</div>
         <div class="fact-val">May 18 · 1:42 pm · HNL</div>
         <div class="fact-key">O'ahu Hotel</div>
-        <div class="fact-val">Waikiki / Kailua area · Nights 1–5</div>
+        <div class="fact-val">Kāneʻohe · Nights 1–5</div>
         <div class="fact-key">Island Hop</div>
         <div class="fact-val">May 23 · HNL → KOA · Alaska · departs 12:25 pm</div>
         <div class="fact-key">Big Island</div>
@@ -332,7 +332,7 @@ footer{background:var(--page2);border-top:0.5px solid var(--rule);text-align:cen
         <div class="fact-key">Sunscreen</div>
         <div class="fact-val">Reef-safe only — Hawaii law bans oxybenzone / octinoxate</div>
         <div class="fact-key">Book ASAP</div>
-        <div class="fact-val">Kohala Divers · Pearl Harbor · Kualoa Ranch · Hanauma Bay</div>
+        <div class="fact-val">Kohala Divers · Pearl Harbor · Kualoa Ranch · Diamond Head</div>
         <div class="fact-key">Currency</div>
         <div class="fact-val">USD · Many plate lunch spots and food trucks are cash-friendly</div>
         <div class="fact-key">Time Zone</div>
@@ -445,14 +445,19 @@ const mkIcon = (c,size) => {
 // O'ahu stops
 [
   {lat:21.3239,lng:-157.9260,label:"HNL — Honolulu Airport"},
-  {lat:21.2769,lng:-157.8286,label:"Waikiki Beach"},
+  {lat:21.4022,lng:-157.8000,label:"Kāneʻohe (Base)"},
   {lat:21.2625,lng:-157.8028,label:"Diamond Head"},
   {lat:21.3143,lng:-157.8666,label:"Bishop Museum"},
-  {lat:21.2696,lng:-157.6939,label:"Hanauma Bay"},
+  {lat:21.3329,lng:-157.8018,label:"Lyon Arboretum / Manoa Falls"},
+  {lat:21.3104,lng:-157.6476,label:"Makapu'u Lighthouse Trail"},
+  {lat:21.3675,lng:-157.9439,label:"Pearl Harbor / USS Arizona"},
+  {lat:21.4566,lng:-157.8393,label:"Waiāhole Beach Park"},
   {lat:21.3923,lng:-157.7395,label:"Kailua Beach"},
+  {lat:21.2914,lng:-157.7005,label:"Koko Head Crater"},
   {lat:21.5147,lng:-157.8363,label:"Kualoa Ranch"},
   {lat:21.4444,lng:-157.8378,label:"Byodo-In Temple"},
-  {lat:21.3675,lng:-157.9439,label:"Pearl Harbor"},
+  {lat:21.6610,lng:-158.0521,label:"Ehukai Pillbox"},
+  {lat:21.6397,lng:-158.0611,label:"Waimea Valley"},
   {lat:21.6777,lng:-158.0467,label:"Sunset Beach · North Shore"},
   {lat:21.5919,lng:-158.1047,label:"Haleiwa"},
 ].forEach(s => L.marker([s.lat,s.lng],{icon:mkIcon('#1A4F72')}).addTo(map)
@@ -474,11 +479,12 @@ const mkIcon = (c,size) => {
 
 // O'ahu route
 L.polyline([
-  [21.3239,-157.9260],[21.2769,-157.8286],[21.2625,-157.8028],[21.3143,-157.8666],
-  [21.2769,-157.8286],[21.2696,-157.6939],[21.3923,-157.7395],
-  [21.2914,-157.7005],[21.5147,-157.8363],[21.4444,-157.8378],[21.3650,-157.7974],
-  [21.6610,-158.0521],[21.6397,-158.0611],[21.6777,-158.0467],[21.5919,-158.1047],
-  [21.2769,-157.8286]
+  [21.3239,-157.9260],[21.4022,-157.8000],
+  [21.3500,-157.8300],[21.2625,-157.8028],[21.3143,-157.8666],[21.3329,-157.8018],[21.4022,-157.8000],
+  [21.3104,-157.6476],[21.3675,-157.9439],[21.4566,-157.8393],[21.3923,-157.7395],[21.4022,-157.8000],
+  [21.2914,-157.7005],[21.5147,-157.8363],[21.4444,-157.8378],[21.4022,-157.8000],
+  [21.6610,-158.0521],[21.6397,-158.0611],[21.6777,-158.0467],[21.5919,-158.1047],[21.4022,-157.8000],
+  [21.2769,-157.8286],[21.4022,-157.8000]
 ],{color:'#1A4F72',weight:2.5,opacity:0.6,dashArray:'6 4'}).addTo(map);
 
 // Big Island route
